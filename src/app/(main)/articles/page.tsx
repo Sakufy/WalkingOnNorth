@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { getSections, getRecentPosts, getAllTags, getPageContent } from "@/lib/db/queries";
 import { Articles, type ArticlesPageData } from "@/components/pages/ArticlesPage";
+
+// ISR: 1 hour cache after first request
+export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "长路纪行",
@@ -22,7 +25,6 @@ const toCard = (p: Record<string, unknown>) => ({
 });
 
 export default async function ArticlesPage() {
-  await headers(); // forces runtime rendering, skips SSG pre-render
   const [sections, recentPosts, allTags, articlesPage] = await Promise.all([
     getSections(), getRecentPosts(20), getAllTags(),
     getPageContent("articles"),

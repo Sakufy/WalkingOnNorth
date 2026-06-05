@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { getPageContent } from "@/lib/db/queries";
 import { AboutPage, type AboutPageData } from "@/components/pages/AboutPage";
+
+// ISR: 1 hour cache after first request
+export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "关于",
@@ -15,7 +18,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  await headers(); // forces runtime rendering, skips SSG pre-render
   const page = await getPageContent("about");
   let pageData: AboutPageData | undefined;
   if (page?.content) {
