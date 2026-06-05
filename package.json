@@ -71,11 +71,9 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.4.0",
-    "dompurify": "^3.4.7",
     "drizzle-orm": "^0.45.2",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
-    "isomorphic-dompurify": "^3.15.0",
     "lucide-react": "^1.17.0",
     "marked": "^18.0.4",
     "motion": "^12.40.0",
@@ -96,7 +94,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
-    "@types/dompurify": "^3.0.5",
+
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
