@@ -1,15 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Turbopack: never bundle these at build time.
-  // @libsql/client — Vercel network blocks hrana during build
-  // jsdom chain — ESM requires crash in Turbopack
-  serverExternalPackages: [
-    "@libsql/client",
-    "jsdom",
-    "html-encoding-sniffer",
-    "@exodus/bytes",
-  ],
+  // Turbopack: never bundle @libsql/client at build time
+  // (Vercel build network blocks hrana protocol → 401)
+  serverExternalPackages: ["@libsql/client"],
 
   // Production optimizations
   poweredByHeader: false,
