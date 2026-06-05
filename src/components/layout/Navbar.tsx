@@ -5,6 +5,34 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 
+/** Track scroll direction for auto-hide navbar on mobile */
+function useScrollDirection() {
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const delta = y - lastY.current;
+        // Show if scrolling up, at top, or delta too small (momentum scroll bounce)
+        if (y <= 40) setHidden(false);
+        else if (delta > 8) setHidden(true);
+        else if (delta < -4) setHidden(false);
+        lastY.current = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return hidden;
+}
+
 /* ============================================
  * Search Dialog
  * ============================================ */
@@ -84,12 +112,19 @@ export function Navbar() {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const hidden = useScrollDirection();
+
+  // Don't hide on admin pages or when menu/search is open
+  const isAdmin = pathname.startsWith("/admin");
+  const shouldHide = hidden && !menuOpen && !searchOpen && !isAdmin;
 
   return (
     <>
       <header style={{
         position: "sticky", top: 0, zIndex: 40,
         backgroundColor: "var(--bx-neutral)", borderBottom: "1px solid rgba(156,149,144,0.2)",
+        transform: shouldHide ? "translateY(-100%)" : "translateY(0)",
+        transition: "transform 200ms ease",
       }}>
         <div style={{
           maxWidth: "800px", margin: "0 auto", height: "44px",
