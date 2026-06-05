@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Noto_Serif_SC, Noto_Sans_SC, Source_Serif_4 } from "next/font/google";
 import { SessionProvider } from "@/components/layout/SessionProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/FooterFigma";
@@ -6,9 +7,31 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import "./globals.css";
 
+const notoSerifSC = Noto_Serif_SC({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  variable: "--font-serif-body",
+  display: "swap",
+});
+
+const sourceSerif4 = Source_Serif_4({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-serif-heading",
+  display: "swap",
+});
+
+const notoSansSC = Noto_Sans_SC({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
 const siteUrl =
   process.env.NODE_ENV === "production"
-    ? "https://beixingzhilu.com"
+    ? "https://www.northwalking.cn"
     : "http://localhost:3000";
 
 export const viewport: Viewport = {
@@ -67,7 +90,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" className="h-full antialiased">
+    <html
+      lang="zh-CN"
+      className={`h-full antialiased ${notoSerifSC.variable} ${sourceSerif4.variable} ${notoSansSC.variable}`}
+    >
       <head>
         <script
           type="application/ld+json"
