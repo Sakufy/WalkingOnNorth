@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Turbopack must not bundle @libsql/client at build time.
+  // Vercel build network blocks hrana protocol → 401.
+  // Keep it as external runtime import.
+  serverExternalPackages: ["@libsql/client"],
+
   async headers() {
     return [
       {
