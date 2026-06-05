@@ -1,30 +1,28 @@
 "use client";
 
-import { lazy, Suspense, type ComponentProps } from "react";
+import dynamic from "next/dynamic";
+import { type ComponentProps } from "react";
 import type TipTapEditor from "./TipTapEditor";
 
-const Editor = lazy(() => import("./TipTapEditor"));
+const Editor = dynamic(() => import("./TipTapEditor"), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="flex items-center justify-center rounded-lg"
+      style={{
+        height: 400,
+        background: "var(--bx-neutral)",
+        color: "var(--bx-secondary)",
+        fontSize: 15,
+      }}
+    >
+      <div className="animate-pulse">编辑器加载中...</div>
+    </div>
+  ),
+});
 
 export default function LazyTipTapEditor(
   props: ComponentProps<typeof TipTapEditor>
 ) {
-  return (
-    <Suspense
-      fallback={
-        <div
-          className="animate-pulse flex items-center justify-center rounded-lg"
-          style={{
-            height: 400,
-            background: "var(--bx-neutral)",
-            color: "var(--bx-secondary)",
-            fontSize: 15,
-          }}
-        >
-          编辑器加载中...
-        </div>
-      }
-    >
-      <Editor {...props} />
-    </Suspense>
-  );
+  return <Editor {...props} />;
 }
