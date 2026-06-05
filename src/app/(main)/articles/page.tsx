@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { getSections, getRecentPosts, getAllTags, getPageContent } from "@/lib/db/queries";
 import { Articles, type ArticlesPageData } from "@/components/pages/ArticlesPage";
 
+// Vercel build network blocks Turso hrana protocol.
+// Force runtime rendering so DB queries happen after deployment.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "长路纪行",
   description:
