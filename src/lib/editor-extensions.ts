@@ -76,6 +76,7 @@ export const editorExtensions = [
     listItem: false,
     codeBlock: false,
     link: false,        // replaced by Link.configure below
+    underline: false,   // replaced by standalone Underline below
   }),
   StyleParagraph,
   StyleHeading,
