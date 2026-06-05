@@ -1,10 +1,11 @@
 /**
- * DOMPurify 封装 — 服务端 + 客户端通用
+ * HTML sanitizer — server & client using sanitize-html.
  *
- * knb.im / WeChat HTML is exclusively inline-style-driven.
- * We MUST NOT strip CSS properties — DOMPurify otherwise
- * drops linear-gradient, background-image: url(), box-shadow etc.
+ * Replaces isomorphic-dompurify (jsdom → ESM chain crash on Vercel).
+ * sanitize-html is pure JS, zero DOM dependency, works everywhere.
  */
+
+import sanitize from "sanitize-html";
 
 /** All HTML elements knb.im / WeChat formatting tools use */
 const ALL_TAGS = [
@@ -19,7 +20,6 @@ const ALL_TAGS = [
   "figcaption", "figure",
 ];
 
-/** Attributes that survive sanitization */
 const ALL_ATTRS = [
   "href", "target", "rel", "src", "alt",
   "data-p-id", "style", "class", "id",
@@ -27,34 +27,31 @@ const ALL_ATTRS = [
 ];
 
 /**
- * DOMPurify config shared by all sanitization paths.
- * FORBID_STYLES + ALLOW_UNKNOWN_PROTOCOLS ensures
+ * DOMPurify-compatible config.
+ * FORBID_STYLES: [] + ALLOW_UNKNOWN_PROTOCOLS ensures
  * background-image: url(), linear-gradient(), box-shadow
  * etc. survive the sanitization pipe.
  */
-const PURIFY_CONFIG = {
-  ALLOWED_TAGS: ALL_TAGS,
-  ALLOWED_ATTR: ALL_ATTRS,
-  ALLOW_DATA_ATTR: true,
-  ALLOW_UNKNOWN_PROTOCOLS: true,
-  // Disable CSS property filtering — knb.im uses
-  // linear-gradient / url() / box-sizing etc.
-  FORBID_STYLES: [] as string[],
+const PURIFY_CONFIG: sanitize.IOptions = {
+  allowedTags: ALL_TAGS,
+  allowedAttributes: Object.fromEntries(ALL_TAGS.map((t) => [t, ALL_ATTRS])),
+  allowedStyles: {
+    "*": {
+      // Match any CSS property — knb.im uses inline styles heavily
+      "*": [/.*/],
+    },
+  },
+  allowProtocolRelative: true,
 };
 
 export async function sanitizeHtml(dirty: string): Promise<string> {
-  const { default: DOMPurify } = await import("isomorphic-dompurify");
-  return DOMPurify.sanitize(dirty, PURIFY_CONFIG);
+  return sanitize(dirty, PURIFY_CONFIG);
 }
 
 export function sanitizeHtmlSync(dirty: string): string {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const DOMPurify = require("isomorphic-dompurify").default;
-  return DOMPurify.sanitize(dirty, PURIFY_CONFIG);
+  return sanitize(dirty, PURIFY_CONFIG);
 }
 
 export function sanitizePaste(dirty: string): string {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const DOMPurify = require("isomorphic-dompurify").default;
-  return DOMPurify.sanitize(dirty, PURIFY_CONFIG);
+  return sanitize(dirty, PURIFY_CONFIG);
 }

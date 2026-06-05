@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Save, Send, Loader2 } from "lucide-react";
-import TipTapEditor from "@/components/editor/TipTapEditor";
+import LazyTipTapEditor from "@/components/editor/LazyTipTapEditor";
 
 const SECTION_OPTIONS = [
   { value: "explore", label: "自我探索" },
@@ -439,7 +439,7 @@ export default function EditArticlePage() {
 
         {/* Editor area — scrollable */}
         <div className="flex-1 overflow-y-auto">
-          <TipTapEditor
+          <LazyTipTapEditor
             initialContent={content}
             onChange={setContent}
             onImageUpload={handleImageUpload}
