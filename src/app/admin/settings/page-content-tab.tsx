@@ -144,8 +144,8 @@ export default function PageContentTab() {
           <div style={{ padding: "0 20px 20px", borderTop: "1px solid rgba(156,149,144,0.1)" }}>
             <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
               {aboutSections.map((sec, si) => (
-                <div key={si} style={{ padding: "12px", border: "1px solid rgba(156,149,144,0.15)", borderRadius: "6px" }}>
-                  <div style={{ ...sectionLabel, color: "var(--bx-tertiary)", marginBottom: "8px" }}>第 {si + 1} 段 · {sec.heading}</div>
+                <div key={si} style={{ padding: "8px 0", borderBottom: si < aboutSections.length - 1 ? "1px solid rgba(156,149,144,0.1)" : "none" }}>
+                  <div style={{ ...sectionLabel, color: "var(--bx-tertiary)", marginBottom: "4px" }}>第 {si + 1} 段 · {sec.heading}</div>
                   <input type="text" value={sec.heading} onChange={(e) => { const n = [...aboutSections]; n[si] = { ...n[si], heading: e.target.value }; setAboutSections(n); }} style={{ ...inputStyle, fontWeight: 600 }} placeholder="段标题" />
                   {sec.concepts ? (
                     (sec.concepts ?? []).map((c, ci) => (
