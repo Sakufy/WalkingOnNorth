@@ -1,4 +1,6 @@
-@import url('https://cdn.jsdelivr.net/npm/lxgwwenkai-web@0.1.2/style.css');
+/* LXGW WenKai — optional enhancement, never block rendering.
+   Falls back to Noto Serif SC instantly if not cached. */
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css') layer(wenkai);
 
 @import "tailwindcss";
 
