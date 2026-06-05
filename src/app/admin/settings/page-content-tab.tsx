@@ -26,7 +26,7 @@ const SECTION_NAMES: Record<SectionKey, string> = { thinking: "自我探索", re
 
 const pageLabel: React.CSSProperties = { fontSize: "0.8125rem", color: "#A67C52", fontFamily: '"Noto Sans SC",Inter,sans-serif', marginBottom: "4px" };
 
-const inputStyle: React.CSSProperties = { width: "100%", padding: "8px 0", border: "none", borderBottom: "1px solid #9C9590", borderRadius: "0", fontSize: "0.9375rem", background: "transparent", outline: "none", color: "#2D2A26", fontFamily: '"Noto Sans SC",Inter,sans-serif' };
+const inputStyle: React.CSSProperties = { width: "100%", padding: "10px 0", border: "none", borderBottom: "1px solid #9C9590", borderRadius: "0", fontSize: "1rem", background: "transparent", outline: "none", color: "#2D2A26", fontFamily: '"Noto Sans SC",Inter,sans-serif' };
 
 type HomeData = typeof DEFAULT_HOME_DATA;
 type AboutSection = { heading: string; body?: string[]; concepts?: { name: string; text: string }[] };
@@ -45,12 +45,12 @@ type PageKey = (typeof PAGES)[number]["key"];
  * ============================================ */
 function Sidebar({ selected, onSelect }: { selected: PageKey; onSelect: (k: PageKey) => void }) {
   return (
-    <nav className="w-full sm:w-48 shrink-0 space-y-0.5">
+    <nav className="w-full sm:w-56 shrink-0 space-y-1">
       {PAGES.map((p) => (
         <button
           key={p.key}
           onClick={() => onSelect(p.key)}
-          className="w-full text-left px-3 py-2.5 rounded-md flex items-center justify-between gap-2 text-sm transition-colors"
+          className="w-full text-left px-4 py-3 rounded-lg flex items-center justify-between gap-3 text-base transition-colors"
           style={{
             backgroundColor: selected === p.key ? "#F5F1EB" : "transparent",
             color: selected === p.key ? "#2D2A26" : "#9C9590",
@@ -59,9 +59,9 @@ function Sidebar({ selected, onSelect }: { selected: PageKey; onSelect: (k: Page
         >
           <div>
             <div>{p.label}</div>
-            <div className="text-xs mt-0.5" style={{ opacity: 0.6 }}>{p.sub}</div>
+            <div className="text-sm mt-1" style={{ opacity: 0.6 }}>{p.sub}</div>
           </div>
-          {selected === p.key && <ChevronRight size={14} style={{ color: "#A67C52" }} />}
+          {selected === p.key && <ChevronRight size={16} style={{ color: "#A67C52" }} />}
         </button>
       ))}
     </nav>
@@ -104,37 +104,37 @@ function HomeEditor({
   onSave: () => void;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
-        <div style={pageLabel}>Slogan</div>
+        <div style={{ ...pageLabel, fontSize: "0.9375rem" }}>Slogan</div>
         <input type="text" value={data.slogan} onChange={(e) => updateField("slogan", e.target.value)}
-          style={{ ...inputStyle, fontSize: "1.125rem", fontWeight: 600 }} />
+          style={{ ...inputStyle, fontSize: "1.25rem", fontWeight: 600 }} />
       </div>
       <div>
-        <div style={pageLabel}>理念阐释</div>
+        <div style={{ ...pageLabel, fontSize: "0.9375rem" }}>理念阐释</div>
         {data.philosophy.map((t, i) => (
           <textarea key={i} value={t} onChange={(e) => { const n = [...data.philosophy]; n[i] = e.target.value; updateField("philosophy", n); }}
-            rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.8, marginTop: i > 0 ? "12px" : "4px" }} />
+            rows={3} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.8, marginTop: i > 0 ? "14px" : "6px" }} />
         ))}
       </div>
       <div>
-        <div style={pageLabel}>适合人群</div>
+        <div style={{ ...pageLabel, fontSize: "0.9375rem" }}>适合人群</div>
         {data.audience.map((a, i) => (
-          <div key={i} style={{ padding: "8px 0", borderBottom: i < data.audience.length - 1 ? "1px solid rgba(156,149,144,0.1)" : "none" }}>
-            <div style={{ display: "flex", gap: "8px" }}>
+          <div key={i} style={{ padding: "12px 0", borderBottom: i < data.audience.length - 1 ? "1px solid rgba(156,149,144,0.1)" : "none" }}>
+            <div style={{ display: "flex", gap: "12px" }}>
               <input type="text" value={a.title} onChange={(e) => { const n = [...data.audience]; n[i] = { ...n[i], title: e.target.value }; updateField("audience", n); }}
                 style={{ ...inputStyle, flex: 1, fontWeight: 600 }} />
               <input type="text" value={a.trait} onChange={(e) => { const n = [...data.audience]; n[i] = { ...n[i], trait: e.target.value }; updateField("audience", n); }}
-                style={{ ...inputStyle, flex: 1, fontSize: "0.8125rem" }} />
+                style={{ ...inputStyle, flex: 1, fontSize: "0.9375rem" }} />
             </div>
             <textarea value={a.text} onChange={(e) => { const n = [...data.audience]; n[i] = { ...n[i], text: e.target.value }; updateField("audience", n); }}
-              rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, marginTop: "6px", fontSize: "0.8125rem" }} />
+              rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, marginTop: "8px", fontSize: "0.9375rem" }} />
           </div>
         ))}
       </div>
       <div className="flex justify-end">
-        <Button onClick={onSave} disabled={saving === "home"} className="rounded-full px-6" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
-          {saving === "home" ? <Loader2 className="animate-spin mr-1" size={14} /> : <Save size={14} className="mr-1" />}保存
+        <Button onClick={onSave} disabled={saving === "home"} className="rounded-full px-8 py-2.5 text-base" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
+          {saving === "home" ? <Loader2 className="animate-spin mr-1" size={16} /> : <Save size={16} className="mr-1" />}保存
         </Button>
       </div>
     </div>
@@ -153,24 +153,24 @@ function ArticlesEditor({
   onSave: () => void;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
-        <div style={pageLabel}>标题</div>
+        <div style={{ ...pageLabel, fontSize: "0.9375rem" }}>标题</div>
         <input type="text" value={data.headline}
           onChange={(e) => setData((d) => ({ ...d, headline: e.target.value }))}
-          style={{ ...inputStyle, fontSize: "1.125rem", fontWeight: 600 }} />
+          style={{ ...inputStyle, fontSize: "1.25rem", fontWeight: 600 }} />
       </div>
       <div>
-        <div style={pageLabel}>介绍段落</div>
+        <div style={{ ...pageLabel, fontSize: "0.9375rem" }}>介绍段落</div>
         {data.intro.map((t, i) => (
           <textarea key={i} value={t}
             onChange={(e) => { const n = [...data.intro]; n[i] = e.target.value; setData((d) => ({ ...d, intro: n })); }}
-            rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.8, marginBottom: "6px" }} />
+            rows={3} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.8, marginBottom: "8px" }} />
         ))}
       </div>
       <div className="flex justify-end">
-        <Button onClick={onSave} disabled={saving === "articles"} className="rounded-full px-6" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
-          {saving === "articles" ? <Loader2 className="animate-spin mr-1" size={14} /> : <Save size={14} className="mr-1" />}保存
+        <Button onClick={onSave} disabled={saving === "articles"} className="rounded-full px-8 py-2.5 text-base" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
+          {saving === "articles" ? <Loader2 className="animate-spin mr-1" size={16} /> : <Save size={16} className="mr-1" />}保存
         </Button>
       </div>
     </div>
@@ -190,21 +190,21 @@ function SectionsEditor({
 }) {
   const keys = Object.keys(SECTION_NAMES) as SectionKey[];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="space-y-6">
       {keys.map((key) => (
-        <div key={key} style={{ padding: "12px 0" }}>
-          <div style={{ ...pageLabel, color: "var(--bx-tertiary)" }}>{SECTION_NAMES[key]}</div>
+        <div key={key} style={{ padding: "24px", border: "1px solid rgba(156,149,144,0.15)", borderRadius: "8px" }}>
+          <div style={{ ...pageLabel, fontSize: "0.9375rem", color: "var(--bx-tertiary)", marginBottom: "12px" }}>{SECTION_NAMES[key]}</div>
           <input type="text" value={data[key].headline}
             onChange={(e) => setData((d) => ({ ...d, [key]: { ...d[key], headline: e.target.value } }))}
-            style={{ ...inputStyle, fontWeight: 600, marginTop: "4px" }} />
+            style={{ ...inputStyle, fontWeight: 600, fontSize: "1.0625rem" }} />
           {data[key].intro.map((t, i) => (
             <textarea key={i} value={t}
               onChange={(e) => { const n = [...data[key].intro]; n[i] = e.target.value; setData((d) => ({ ...d, [key]: { ...d[key], intro: n } })); }}
-              rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, marginTop: "6px" }} />
+              rows={3} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.8, marginTop: "8px", fontSize: "0.9375rem" }} />
           ))}
-          <div className="flex justify-end mt-3">
-            <Button onClick={() => onSave(key)} disabled={saving === `section-${key}`} size="sm" className="rounded-full px-4" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
-              {saving === `section-${key}` ? "…" : "保存"}
+          <div className="flex justify-end mt-4">
+            <Button onClick={() => onSave(key)} disabled={saving === `section-${key}`} className="rounded-full px-6 py-2" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
+              {saving === `section-${key}` ? "保存中…" : "保存"}
             </Button>
           </div>
         </div>
@@ -225,36 +225,36 @@ function AboutEditor({
   onSave: () => void;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {sections.map((sec, si) => (
-        <div key={si} style={{ padding: "8px 0", borderBottom: si < sections.length - 1 ? "1px solid rgba(156,149,144,0.1)" : "none" }}>
-          <div style={{ ...pageLabel, color: "var(--bx-tertiary)", marginBottom: "4px" }}>第 {si + 1} 段 · {sec.heading}</div>
+        <div key={si} style={{ padding: "20px", border: "1px solid rgba(156,149,144,0.12)", borderRadius: "8px" }}>
+          <div style={{ ...pageLabel, fontSize: "0.9375rem", color: "var(--bx-tertiary)", marginBottom: "8px" }}>第 {si + 1} 段 · {sec.heading}</div>
           <input type="text" value={sec.heading}
             onChange={(e) => { const n = [...sections]; n[si] = { ...n[si], heading: e.target.value }; setSections(n); }}
-            style={{ ...inputStyle, fontWeight: 600 }} />
+            style={{ ...inputStyle, fontWeight: 600, fontSize: "1.0625rem" }} />
           {sec.concepts ? (
             (sec.concepts ?? []).map((c, ci) => (
-              <div key={ci} style={{ padding: "4px 0", borderBottom: ci < (sec.concepts?.length ?? 1) - 1 ? "1px solid rgba(156,149,144,0.05)" : "none" }}>
+              <div key={ci} style={{ padding: "8px 0", borderBottom: ci < (sec.concepts?.length ?? 1) - 1 ? "1px solid rgba(156,149,144,0.05)" : "none" }}>
                 <input type="text" value={c.name}
                   onChange={(e) => { const n = [...sections]; const cn = [...(n[si].concepts ?? [])]; cn[ci] = { ...cn[ci], name: e.target.value }; n[si] = { ...n[si], concepts: cn }; setSections(n); }}
-                  style={{ ...inputStyle, fontSize: "0.9375rem", marginBottom: "4px" }} />
+                  style={{ ...inputStyle, fontSize: "1rem", marginBottom: "6px" }} />
                 <textarea value={c.text}
                   onChange={(e) => { const n = [...sections]; const cn = [...(n[si].concepts ?? [])]; cn[ci] = { ...cn[ci], text: e.target.value }; n[si] = { ...n[si], concepts: cn }; setSections(n); }}
-                  rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, fontSize: "0.8125rem" }} />
+                  rows={3} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, fontSize: "0.9375rem" }} />
               </div>
             ))
           ) : (
             (sec.body ?? []).map((b, bi) => (
               <textarea key={bi} value={b}
                 onChange={(e) => { const n = [...sections]; const bn = [...(n[si].body ?? [])]; bn[bi] = e.target.value; n[si] = { ...n[si], body: bn }; setSections(n); }}
-                rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.8, marginBottom: "6px" }} />
+                rows={3} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.8, marginBottom: "8px" }} />
             ))
           )}
         </div>
       ))}
       <div className="flex justify-end">
-        <Button onClick={onSave} disabled={saving === "about"} className="rounded-full px-6" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
-          {saving === "about" ? <Loader2 className="animate-spin mr-1" size={14} /> : <Save size={14} className="mr-1" />}保存
+        <Button onClick={onSave} disabled={saving === "about"} className="rounded-full px-8 py-2.5 text-base" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
+          {saving === "about" ? <Loader2 className="animate-spin mr-1" size={16} /> : <Save size={16} className="mr-1" />}保存
         </Button>
       </div>
     </div>
@@ -337,14 +337,14 @@ export default function PageContentTab() {
       <MobileTabs selected={selected} onSelect={setSelected} />
 
       {/* Content area */}
-      <div className="flex gap-6 mt-4 sm:mt-0">
+      <div className="flex gap-8 mt-4 sm:mt-0">
         {/* Desktop sidebar (hidden on mobile) */}
         <div className="hidden sm:block">
           <Sidebar selected={selected} onSelect={setSelected} />
         </div>
 
-        {/* Main content */}
-        <div className="flex-1 min-w-0">
+        {/* Main content — wide and spacious */}
+        <div className="flex-1 min-w-0 max-w-3xl">
           {renderContent()}
         </div>
       </div>

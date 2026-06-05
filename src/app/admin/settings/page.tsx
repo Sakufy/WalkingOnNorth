@@ -17,7 +17,7 @@ const UsersTab = dynamic(() => import("./users-tab"), {
 
 export default function SettingsPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <h1
         className="text-2xl font-semibold mb-6"
         style={{ fontFamily: '"Noto Serif SC", serif', color: "#2D2A26" }}
