@@ -160,19 +160,15 @@ export function Navbar() {
               <span style={{ display: "block", width: "18px", height: "2px", backgroundColor: "var(--bx-primary)", transition: "opacity 200ms ease", opacity: menuOpen ? 0 : 1 }} />
               <span style={{ display: "block", width: "18px", height: "2px", backgroundColor: "var(--bx-primary)", transition: "transform 200ms ease", transform: menuOpen ? "translateY(-6px) rotate(-45deg)" : "none" }} />
             </button>
-          </div>
-        </div>
 
-        {/* Popover menu */}
-        {menuOpen && (
-          <>
-            <div style={{ position: "fixed", inset: 0, zIndex: 38 }} onClick={() => setMenuOpen(false)} />
-            <div style={{
-              position: "absolute", top: "100%", right: "8px", zIndex: 39,
-              width: "200px", backgroundColor: "var(--bx-neutral)",
-              borderRadius: "6px", boxShadow: "0 2px 12px rgba(45,42,38,0.1)",
-              border: "1px solid rgba(156,149,144,0.12)", padding: "8px 0",
-            }}>
+            {/* Popover menu — inside relative container so it aligns with hamburger on all screens */}
+            {menuOpen && (
+              <div style={{
+                position: "absolute", top: "100%", right: "0", zIndex: 39,
+                width: "200px", backgroundColor: "var(--bx-neutral)",
+                borderRadius: "6px", boxShadow: "0 2px 12px rgba(45,42,38,0.1)",
+                border: "1px solid rgba(156,149,144,0.12)", padding: "8px 0",
+              }}>
               <button onClick={() => { setMenuOpen(false); setSearchOpen(true); }} style={{
                 display: "block", width: "100%", textAlign: "left", padding: "8px 16px",
                 fontSize: "0.9375rem", color: "var(--bx-primary)", fontFamily: '"Noto Sans SC",Inter,sans-serif',
@@ -205,7 +201,13 @@ export function Navbar() {
                 }}>登录</Link>
               )}
             </div>
-          </>
+            )}
+          </div>
+        </div>
+
+        {/* Click-outside overlay for hamburger menu */}
+        {menuOpen && (
+          <div style={{ position: "fixed", inset: 0, zIndex: 38 }} onClick={() => setMenuOpen(false)} />
         )}
       </header>
     </>
