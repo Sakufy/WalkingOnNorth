@@ -68,13 +68,14 @@ const StyleTableHeader = withStyle(TableHeader);
 
 export const editorExtensions = [
   StarterKit.configure({
-    heading: false,       // replaced by StyleHeading
-    paragraph: false,     // replaced by StyleParagraph
-    blockquote: false,    // replaced by StyleBlockquote
-    bulletList: false,    // replaced by StyleBulletList
-    orderedList: false,   // replaced by StyleOrderedList
-    listItem: false,      // replaced by StyleListItem
+    heading: false,
+    paragraph: false,
+    blockquote: false,
+    bulletList: false,
+    orderedList: false,
+    listItem: false,
     codeBlock: false,
+    link: false,        // replaced by Link.configure below
   }),
   StyleParagraph,
   StyleHeading,
