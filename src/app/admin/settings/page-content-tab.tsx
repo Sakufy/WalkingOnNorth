@@ -26,13 +26,13 @@ const SECTION_NAMES: Record<SectionKey, string> = { thinking: "自我探索", re
 
 const sectionLabel: React.CSSProperties = { fontSize: "0.8125rem", color: "#A67C52", fontFamily: '"Noto Sans SC",Inter,sans-serif', marginBottom: "4px" };
 
-const inputStyle: React.CSSProperties = { width: "100%", padding: "8px 12px", border: "1px solid rgba(156,149,144,0.3)", borderRadius: "6px", fontSize: "0.9375rem", background: "#FAF8F4", outline: "none", fontFamily: '"Noto Sans SC",Inter,sans-serif' };
+const inputStyle: React.CSSProperties = { width: "100%", padding: "8px 0", border: "none", borderBottom: "1px solid #9C9590", borderRadius: "0", fontSize: "0.9375rem", background: "transparent", outline: "none", color: "#2D2A26", fontFamily: '"Noto Sans SC",Inter,sans-serif' };
 
 type HomeData = typeof DEFAULT_HOME_DATA;
 type AboutSection = { heading: string; body?: string[]; concepts?: { name: string; text: string }[] };
 
 export default function PageContentTab() {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set(["sections"]));
+  const [expanded, setExpanded] = useState<Set<string>>(new Set(["home", "articles", "sections", "about"]));
   const toggle = (id: string) => setExpanded((prev) => {
     const next = new Set(prev);
     if (next.has(id)) next.delete(id); else next.add(id);
@@ -93,6 +93,15 @@ export default function PageContentTab() {
             <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
               <div><div style={sectionLabel}>Slogan</div><input type="text" value={homeData.slogan} onChange={(e) => updateField("slogan", e.target.value)} style={{ ...inputStyle, fontSize: "1.125rem", fontWeight: 600 }} placeholder="向内探寻，向北而行" /></div>
               <div><div style={sectionLabel}>理念阐释（3 段）</div>{homeData.philosophy.map((t, i) => <textarea key={i} value={t} onChange={(e) => { const n = [...homeData.philosophy]; n[i] = e.target.value; updateField("philosophy", n); }} rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.8, marginTop: i > 0 ? "12px" : "4px" }} />)}</div>
+              <div><div style={{ ...sectionLabel, marginTop: "8px" }}>适合人群（4 类）</div>{homeData.audience.map((a, i) => (
+                <div key={i} style={{ padding: "8px 0", borderBottom: i < homeData.audience.length - 1 ? "1px solid rgba(156,149,144,0.1)" : "none" }}>
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <input type="text" value={a.title} onChange={(e) => { const n = [...homeData.audience]; n[i] = { ...n[i], title: e.target.value }; updateField("audience", n); }} style={{ ...inputStyle, flex: 1, fontWeight: 600 }} placeholder="人群名" />
+                    <input type="text" value={a.trait} onChange={(e) => { const n = [...homeData.audience]; n[i] = { ...n[i], trait: e.target.value }; updateField("audience", n); }} style={{ ...inputStyle, flex: 1, fontSize: "0.8125rem" }} placeholder="特质" />
+                  </div>
+                  <textarea value={a.text} onChange={(e) => { const n = [...homeData.audience]; n[i] = { ...n[i], text: e.target.value }; updateField("audience", n); }} rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, marginTop: "6px", fontSize: "0.8125rem" }} placeholder="描述" />
+                </div>
+              ))}</div>
               <div className="flex justify-end mt-4"><Button onClick={() => handleSave("home", "首页", homeData)} disabled={saving === "home"} className="rounded-full px-6" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>{saving === "home" ? <Loader2 className="animate-spin mr-1" size={14} /> : <Save size={14} className="mr-1" />}保存</Button></div>
             </div>
           </div>
