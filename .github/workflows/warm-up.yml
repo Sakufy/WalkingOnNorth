@@ -1,0 +1,20 @@
+name: ISR Cache Warm-up
+
+# Every 30 minutes, poke core pages to keep ISR cache hot.
+# Result: all visitors after the first one get <0.5s response from CDN edge.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Warm home page
+        run: curl -s -o /dev/null -w "home: %{http_code}" https://www.northwalking.cn/
+
+      - name: Warm articles page
+        run: curl -s -o /dev/null -w "articles: %{http_code}" https://www.northwalking.cn/articles
+
+      - name: Warm about page
+        run: curl -s -o /dev/null -w "about: %{http_code}" https://www.northwalking.cn/about
