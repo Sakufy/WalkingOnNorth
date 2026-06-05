@@ -1,0 +1,19 @@
+import type { MetadataRoute } from "next";
+
+const siteUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://beixingzhilu.com"
+    : "http://localhost:3000";
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin/", "/api/", "/debug/", "/login", "/register"],
+      },
+    ],
+    sitemap: `${siteUrl}/sitemap.xml`,
+  };
+}

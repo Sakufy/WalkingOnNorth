@@ -1,0 +1,466 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Noto+Sans+SC:wght@400;500&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/lxgwwenkai-web@1.7.0/style.css');
+
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+
+  /* 北行之路 warm palette */
+  --bx-primary: #2D2A26;
+  --bx-secondary: #9C9590;
+  --bx-tertiary: #A67C52;
+  --bx-neutral: #F5F1EB;
+  --bx-surface: #FAF8F4;
+  --bx-on-primary: #F5F1EB;
+  --bx-success: #6B8F5E;
+  --bx-warning: #C49A3C;
+  --bx-error: #B85450;
+
+  /* override shadcn defaults to match warm palette */
+  --background: #F5F1EB;
+  --foreground: #2D2A26;
+  --card: #F5F1EB;
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #030213;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.0058 264.53);
+  --secondary-foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --accent: #e9ebef;
+  --accent-foreground: #030213;
+  --destructive: #d4183d;
+  --destructive-foreground: #F5F1EB;
+  --border: rgba(45, 42, 38, 0.1);
+  --input: transparent;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--bx-neutral);
+    color: var(--bx-primary);
+    font-family: "Noto Sans SC", Inter, -apple-system, sans-serif;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1, h2, h3 {
+    font-family: "Noto Serif SC", "Source Serif 4", Georgia, serif;
+    font-weight: 600;
+    color: var(--bx-primary);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 1.375rem;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--bx-primary);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    p { font-size: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ========================================
+ * Homepage scroll-snap: only hero snap
+ * Proximity = gentle, won't force-stop
+ * ======================================== */
+@layer utilities {
+  .bx-scroll-snap {
+    scroll-snap-type: y proximity;
+  }
+  .bx-snap-start {
+    scroll-snap-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bx-scroll-snap {
+    scroll-snap-type: none;
+  }
+  .bx-arrow-bounce {
+    animation: none !important;
+  }
+}
+
+@keyframes bx-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+.bx-arrow-bounce {
+  animation: bx-bounce 2s ease-in-out infinite;
+}
+.bx-arrow-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ========================================
+ * Article content typography (frontend)
+ *
+ * Reads inline-styled HTML from WeChat formatting
+ * tools. Minimal overrides — let inline styles
+ * define the typography, only set layout defaults.
+ * ======================================== */
+.article-content {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.article-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1em auto;
+}
+
+.article-content hr {
+  margin: 1.5em 0;
+}
+
+/* Fallback for content without inline styles */
+.article-content p:not([style]) {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #333;
+  margin: 0 0 0.8em;
+}
+
+.article-content h1:not([style]),
+.article-content h2:not([style]),
+.article-content h3:not([style]) {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #333;
+}
+
+.article-content blockquote:not([style]) {
+  margin: 1em 0;
+  padding: 10px 15px;
+  border-left: 3px solid #dbdbdb;
+  color: #666;
+}
+
+.article-content ul:not([style]),
+.article-content ol:not([style]) {
+  padding-left: 1.5em;
+}
+
+/* ========================================
+ * WeChat Public Account editor preview
+ *
+ * Pixel-level match with WeChat's real
+ * rendering engine. References:
+ * - Font stack from WeChat's own CSS
+ * - Line-height & letter-spacing from
+ *   community reverse-engineering
+ * - Blockquote / list / hr from CSDN
+ *   analysis of WeChat's HTML/CSS support
+ * ======================================== */
+.wechat-editor-content {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  letter-spacing: 0.034em;
+  color: #333333;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.wechat-editor-content p {
+  margin: 0 0 0.8em;
+  min-height: 1.8em;
+}
+
+.wechat-editor-content h1,
+.wechat-editor-content h2,
+.wechat-editor-content h3 {
+  font-weight: 600;
+  line-height: 1.4;
+  color: #333333;
+  margin: 1.2em 0 0.5em;
+  letter-spacing: 0.02em;
+}
+
+.wechat-editor-content h1 { font-size: 22px; }
+.wechat-editor-content h2 { font-size: 20px; }
+.wechat-editor-content h3 { font-size: 18px; }
+
+.wechat-editor-content blockquote {
+  margin: 1em 0;
+  padding: 10px 15px;
+  border-left: 3px solid #dbdbdb;
+  color: #666666;
+  font-style: normal;
+  background: transparent;
+}
+
+.wechat-editor-content ul,
+.wechat-editor-content ol {
+  padding-left: 1.5em;
+  margin: 0.6em 0;
+}
+
+.wechat-editor-content li {
+  margin-bottom: 0.1em;
+  line-height: 1.6;
+}
+
+.wechat-editor-content a {
+  color: #576b95;
+  text-decoration: none;
+}
+
+.wechat-editor-content hr {
+  border: none;
+  border-top: 1px solid #dbdbdb;
+  margin: 1.5em 0;
+}
+
+.wechat-editor-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1em auto;
+}
+
+.wechat-editor-content strong,
+.wechat-editor-content b {
+  font-weight: 600;
+}
+
+.wechat-editor-content em,
+.wechat-editor-content i {
+  font-style: italic;
+}
+
+.wechat-editor-content u {
+  text-decoration: underline;
+}
+
+.wechat-editor-content del,
+.wechat-editor-content s {
+  text-decoration: line-through;
+}
+
+.wechat-editor-content mark {
+  background: #fff5cc;
+  padding: 0 2px;
+}
+
+.wechat-editor-content code {
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: #c7254e;
+}
+
+.wechat-editor-content sub,
+.wechat-editor-content sup {
+  font-size: 0.75em;
+  line-height: 0;
+  position: relative;
+}
+
+.wechat-editor-content sub {
+  vertical-align: sub;
+  bottom: -0.25em;
+}
+
+.wechat-editor-content sup {
+  vertical-align: super;
+  top: -0.5em;
+}
+
+.wechat-editor-content br + br {
+  display: none;
+}
+
+/* ========================================
+ * knb.im / WeChat Public Account layout
+ * Structural base styles — inline styles drive
+ * typography, colors, spacing. We only ensure
+ * proper box model, flex layout, and containment.
+ * ======================================== */
+.wechat-editor-content,
+.article-content {
+  box-sizing: border-box;
+  /* Reset any inherited font settings */
+  font-family: inherit;
+}
+
+/* Box model reset — knb uses border-box everywhere */
+.article-content *,
+.article-content *::before,
+.article-content *::after,
+.wechat-editor-content *,
+.wechat-editor-content *::before,
+.wechat-editor-content *::after {
+  box-sizing: inherit;
+}
+
+/* Inline images */
+.article-content img,
+.wechat-editor-content img {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Tables */
+.article-content table,
+.wechat-editor-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* Code blocks preformatted */
+.article-content pre,
+.wechat-editor-content pre {
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Progress bars ensure visible */
+.article-content .article-map__bar-wrap,
+.wechat-editor-content .article-map__bar-wrap {
+  display: block;
+  line-height: 0;
+}
+
+.article-content .article-map__bar,
+.wechat-editor-content .article-map__bar {
+  display: block;
+}
+
+/* Reading time cards */
+.article-content .reading-time,
+.wechat-editor-content .reading-time {
+  overflow: hidden;
+}
+
+/* Active paragraph highlight (段评) */
+.bx-paragraph-active {
+  background-color: rgba(166, 124, 82, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  transition: background-color 150ms ease;
+}
+
+[data-p-id] {
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+[data-p-id]:hover {
+  background-color: rgba(166, 124, 82, 0.04);
+}
