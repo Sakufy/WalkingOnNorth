@@ -282,8 +282,8 @@ export default function EditArticlePage() {
               className="pt-3 sm:pt-4 border-t space-y-3 sm:space-y-4"
               style={{ borderColor: "#E8E3DC" }}
             >
-              {/* Summary + Tags row (side-by-side on desktop) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              {/* Summary + Tags row (side-by-side on desktop, aligned top) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-start">
                 {/* Summary */}
                 <div>
                   <label className="block text-xs sm:text-sm font-medium mb-1" style={{ color: "#2D2A26" }}>

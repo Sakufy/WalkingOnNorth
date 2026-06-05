@@ -79,7 +79,7 @@ export default function TopicsTab() {
               <h3 className="text-sm font-medium mb-2" style={{ color: "#9C9590" }}>{SECTION_LABELS[sec]}</h3>
               <div className="space-y-2">
                 {sectionTopics.map((t) => (
-                  <div key={t.id} className="flex items-center justify-between p-3 border rounded-lg" style={{ borderColor: "#E8E3DC" }}>
+                  <div key={t.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 border rounded-lg" style={{ borderColor: "#E8E3DC" }}>
                     <div>
                       <span className="font-medium text-sm" style={{ color: "#2D2A26" }}>{t.name}</span>
                       {t.description && <p className="text-xs mt-0.5" style={{ color: "#9C9590" }}>{t.description}</p>}

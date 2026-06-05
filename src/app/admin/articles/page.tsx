@@ -125,9 +125,9 @@ export default function AdminArticlesPage() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
         <h1
           className="text-2xl font-semibold"
           style={{ fontFamily: '"Noto Serif SC", serif', color: "#2D2A26" }}
@@ -229,7 +229,7 @@ export default function AdminArticlesPage() {
           </p>
         </div>
       ) : (
-        <div className="rounded-lg border overflow-hidden" style={{ borderColor: "#E8E3DC" }}>
+        <div className="rounded-lg border overflow-x-auto" style={{ borderColor: "#E8E3DC" }}>
           <Table>
             <TableHeader>
               <TableRow style={{ borderColor: "#E8E3DC" }}>
@@ -294,7 +294,7 @@ export default function AdminArticlesPage() {
                       : new Date(post.createdAt).toLocaleDateString("zh-CN")}
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1">
+                    <div className="flex items-center justify-end gap-1 flex-wrap">
                       <button
                         type="button"
                         title="编辑"
@@ -351,7 +351,7 @@ export default function AdminArticlesPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6">
+        <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <button
               key={p}

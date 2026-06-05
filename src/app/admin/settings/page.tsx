@@ -17,7 +17,7 @@ const UsersTab = dynamic(() => import("./users-tab"), {
 
 export default function SettingsPage() {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <h1
         className="text-2xl font-semibold mb-6"
         style={{ fontFamily: '"Noto Serif SC", serif', color: "#2D2A26" }}
@@ -25,7 +25,7 @@ export default function SettingsPage() {
         站点设置
       </h1>
       <Tabs defaultValue="pages">
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 overflow-x-auto">
           <TabsTrigger value="pages">页面内容</TabsTrigger>
           <TabsTrigger value="topics">主题管理</TabsTrigger>
           <TabsTrigger value="users">用户管理</TabsTrigger>

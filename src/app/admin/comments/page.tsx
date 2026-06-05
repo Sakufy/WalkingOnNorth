@@ -84,7 +84,7 @@ export default function AdminCommentsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <h1
         className="text-2xl font-semibold mb-8"
         style={{ fontFamily: '"Noto Serif SC", serif', color: "#2D2A26" }}
@@ -184,7 +184,7 @@ function CommentTable({
   showStatus?: boolean;
 }) {
   return (
-    <div className="rounded-lg border overflow-hidden" style={{ borderColor: "#E8E3DC" }}>
+    <div className="rounded-lg border overflow-x-auto" style={{ borderColor: "#E8E3DC" }}>
       <Table>
         <TableHeader>
           <TableRow style={{ borderColor: "#E8E3DC" }}>
@@ -235,7 +235,7 @@ function CommentTable({
                 {new Date(c.createdAt).toLocaleDateString("zh-CN")}
               </TableCell>
               <TableCell>
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap">
                   {c.status === "pending" && (
                     <>
                       <button

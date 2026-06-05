@@ -465,3 +465,16 @@
 [data-p-id]:hover {
   background-color: rgba(166, 124, 82, 0.04);
 }
+
+/* ========================================
+ * Mobile: prevent iOS Safari input zoom
+ * Safari auto-zooms when font-size < 16px
+ * on focused inputs. Force 16px on mobile.
+ * ======================================== */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
