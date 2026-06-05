@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Save, Send, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Send, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import LazyTipTapEditor from "@/components/editor/LazyTipTapEditor";
 
 const SECTION_OPTIONS = [
@@ -33,6 +33,7 @@ export default function EditArticlePage() {
   const [error, setError] = useState("");
   const [changeSummary, setChangeSummary] = useState("");
   const [sectionTags, setSectionTags] = useState<string[]>([]);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
 
   // Load post data
   useEffect(() => {
@@ -146,51 +147,46 @@ export default function EditArticlePage() {
 
   return (
     <div className="h-[calc(100vh-64px)] flex flex-col">
-      {/* Top bar */}
+      {/* ====== Top bar ====== */}
       <div
-        className="flex items-center justify-between px-6 py-3 border-b shrink-0"
+        className="flex items-center justify-between px-4 sm:px-6 py-3 border-b shrink-0"
         style={{ borderColor: "#E8E3DC" }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <Link
             href="/admin/articles"
             className="inline-flex items-center gap-1 text-sm hover:underline"
             style={{ color: "#9C9590" }}
           >
             <ArrowLeft size={16} />
-            返回
+            <span className="hidden sm:inline">返回</span>
           </Link>
           <h1
-            className="text-lg font-semibold"
+            className="text-base sm:text-lg font-semibold truncate max-w-[200px]"
             style={{ fontFamily: '"Noto Serif SC", serif', color: "#2D2A26" }}
           >
             编辑文章
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Button
             onClick={handleSave}
             disabled={saving}
             variant="outline"
-            className="rounded-full px-5"
+            className="rounded-full px-3 sm:px-5 text-xs sm:text-sm"
             style={{ borderColor: "#9C9590", color: "#2D2A26" }}
           >
             {saving ? (
-              <>
-                <Loader2 className="animate-spin mr-1" size={14} />
-                保存中…
-              </>
+              <Loader2 className="animate-spin mr-1" size={14} />
             ) : (
-              <>
-                <Save size={16} className="mr-1" />
-                保存草稿
-              </>
+              <Save size={14} className="mr-1 hidden sm:inline" />
             )}
+            {saving ? "保存中…" : "保存"}
           </Button>
           <Button
             onClick={handlePublish}
             disabled={publishing}
-            className="rounded-full px-6"
+            className="rounded-full px-4 sm:px-6 text-xs sm:text-sm"
             style={{
               backgroundColor: "#2D2A26",
               color: "#F5F1EB",
@@ -200,66 +196,54 @@ export default function EditArticlePage() {
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2D2A26")}
           >
             {publishing ? (
-              <>
-                <Loader2 className="animate-spin mr-1" size={14} />
-                发布中…
-              </>
+              <Loader2 className="animate-spin mr-1" size={14} />
             ) : (
-              <>
-                <Send size={16} className="mr-1" />
-                发布
-              </>
+              <Send size={14} className="mr-1 hidden sm:inline" />
             )}
+            {publishing ? "发布中…" : "发布"}
           </Button>
         </div>
       </div>
 
-      {/* Main content: metadata + editor — scroll independently */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Metadata sidebar */}
-        <div
-          className="w-80 shrink-0 border-r overflow-y-auto p-6 space-y-5"
-          style={{ borderColor: "#E8E3DC" }}
-        >
+      {/* ====== Compact metadata header (sticky) ====== */}
+      <div
+        className="shrink-0 border-b px-4 sm:px-6 py-3 sm:py-4"
+        style={{ borderColor: "#E8E3DC", backgroundColor: "#FAFAF8" }}
+      >
+        <div className="max-w-4xl mx-auto space-y-2 sm:space-y-3">
           {/* Title */}
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: "#2D2A26" }}>
-              标题
-            </label>
-            <Input
-              placeholder="文章标题"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="border-0 border-b rounded-none"
-              style={{
-                borderColor: "#9C9590",
-                backgroundColor: "transparent",
-                color: "#2D2A26",
-                padding: "8px 0",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderBottomWidth = "2px";
-                e.currentTarget.style.borderColor = "#A67C52";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderBottomWidth = "1px";
-                e.currentTarget.style.borderColor = "#9C9590";
-              }}
-            />
-          </div>
+          <Input
+            placeholder="文章标题"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border-0 border-b rounded-none text-base sm:text-lg font-medium"
+            style={{
+              borderColor: "#9C9590",
+              backgroundColor: "transparent",
+              color: "#2D2A26",
+              padding: "6px 0",
+              fontFamily: '"Noto Serif SC", serif',
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderBottomWidth = "2px";
+              e.currentTarget.style.borderColor = "#A67C52";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderBottomWidth = "1px";
+              e.currentTarget.style.borderColor = "#9C9590";
+            }}
+          />
 
-          {/* Section */}
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: "#2D2A26" }}>
-              板块
-            </label>
-            <div className="flex flex-wrap gap-2">
+          {/* Section + collapse toggle (inline on desktop, stacked on mobile) */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            {/* Section pills */}
+            <div className="flex flex-wrap gap-1.5">
               {SECTION_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
                   onClick={() => setSection(opt.value)}
-                  className="px-3 py-1.5 rounded-full text-xs transition-all border"
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm transition-all border"
                   style={{
                     backgroundColor: section === opt.value ? "#2D2A26" : "transparent",
                     color: section === opt.value ? "#F5F1EB" : "#9C9590",
@@ -270,175 +254,177 @@ export default function EditArticlePage() {
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Topic/Column (only shown when topics exist for this section) */}
-          {filteredTopics.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: "#2D2A26" }}>
-                主题/专栏
-              </label>
-              <select
-                value={topicId}
-                onChange={(e) => setTopicId(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md text-sm bg-transparent"
-                style={{ borderColor: "#9C9590", color: "#2D2A26" }}
-              >
-                <option value="">无主题</option>
-                {filteredTopics.map((t) => (
-                  <option key={t.id} value={t.id}>{t.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Summary */}
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: "#2D2A26" }}>
-              摘要
-            </label>
-            <textarea
-              placeholder="简短描述文章内容…"
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-              rows={4}
-              className="w-full border-0 border-b rounded-none resize-none text-sm"
-              style={{
-                borderColor: "#9C9590",
-                backgroundColor: "transparent",
-                color: "#2D2A26",
-                padding: "8px 0",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderBottomWidth = "2px";
-                e.currentTarget.style.borderColor = "#A67C52";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderBottomWidth = "1px";
-                e.currentTarget.style.borderColor = "#9C9590";
-              }}
-            />
-          </div>
-
-          {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: "#2D2A26" }}>
-              标签
-            </label>
-            <Input
-              placeholder="用逗号分隔，如：哲学, 阅读"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              className="border-0 border-b rounded-none text-sm"
-              style={{
-                borderColor: "#9C9590",
-                backgroundColor: "transparent",
-                color: "#2D2A26",
-                padding: "8px 0",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderBottomWidth = "2px";
-                e.currentTarget.style.borderColor = "#A67C52";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderBottomWidth = "1px";
-                e.currentTarget.style.borderColor = "#9C9590";
-              }}
-            />
-            {/* Tag suggestions */}
-            {sectionTags.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {sectionTags
-                  .filter((t) => !tags.split(",").map((s) => s.trim()).includes(t))
-                  .slice(0, 10)
-                  .map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => {
-                        const existing = tags
-                          .split(",")
-                          .map((s) => s.trim())
-                          .filter(Boolean);
-                        setTags(existing.concat(t).join(", "));
-                      }}
-                      className="text-xs px-2 py-0.5 rounded-full border transition-colors"
-                      style={{
-                        borderColor: "#A67C52",
-                        color: "#A67C52",
-                        backgroundColor: "transparent",
-                      }}
-                    >
-                      + {t}
-                    </button>
-                  ))}
-              </div>
-            )}
-          </div>
-
-          {/* Sort order */}
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: "#2D2A26" }}>
-              排序号
-            </label>
-            <p className="text-xs mb-2" style={{ color: "#9C9590" }}>数字越小越靠前，默认 0。置顶可设为负数。</p>
-            <Input
-              type="number"
-              value={sortOrder}
-              onChange={(e) => setSortOrder(Number(e.target.value))}
-              className="border-0 border-b rounded-none text-sm"
-              style={{
-                borderColor: "#9C9590",
-                backgroundColor: "transparent",
-                color: "#2D2A26",
-                padding: "8px 0",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderBottomWidth = "2px";
-                e.currentTarget.style.borderColor = "#A67C52";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderBottomWidth = "1px";
-                e.currentTarget.style.borderColor = "#9C9590";
-              }}
-            />
-          </div>
-
-          {/* Change summary (version note) */}
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: "#2D2A26" }}>
-              本次修改说明
-            </label>
-            <textarea
-              placeholder="简述本次修改内容（发布时保存为版本记录）"
-              value={changeSummary}
-              onChange={(e) => setChangeSummary(e.target.value)}
-              rows={2}
-              className="w-full border rounded-md resize-none text-sm p-2"
-              style={{
-                borderColor: "#9C9590",
-                backgroundColor: "transparent",
-                color: "#2D2A26",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "#A67C52";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "#9C9590";
-              }}
-            />
+            {/* Spacer + collapse button */}
+            <div className="flex-1" />
+            <button
+              type="button"
+              onClick={() => setAdvancedOpen((v) => !v)}
+              className="inline-flex items-center gap-1 text-xs sm:text-sm transition-colors rounded-md px-2 py-1"
+              style={{ color: "#A67C52" }}
+            >
+              {advancedOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              {advancedOpen ? "收起设置" : "更多设置"}
+            </button>
           </div>
 
           {/* Error */}
           {error && (
-            <p className="text-sm" style={{ color: "#B85450" }}>
+            <p className="text-xs sm:text-sm" style={{ color: "#B85450" }}>
               {error}
             </p>
           )}
-        </div>
 
-        {/* Editor area — scrollable */}
-        <div className="flex-1 overflow-y-auto">
+          {/* ====== Collapsible advanced settings ====== */}
+          {advancedOpen && (
+            <div
+              className="pt-3 sm:pt-4 border-t space-y-3 sm:space-y-4"
+              style={{ borderColor: "#E8E3DC" }}
+            >
+              {/* Summary + Tags row (side-by-side on desktop) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {/* Summary */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-1" style={{ color: "#2D2A26" }}>
+                    摘要
+                  </label>
+                  <textarea
+                    placeholder="简短描述文章内容…"
+                    value={summary}
+                    onChange={(e) => setSummary(e.target.value)}
+                    rows={2}
+                    className="w-full border rounded-md resize-none text-xs sm:text-sm p-2"
+                    style={{
+                      borderColor: "#9C9590",
+                      backgroundColor: "transparent",
+                      color: "#2D2A26",
+                    }}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = "#A67C52")}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = "#9C9590")}
+                  />
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-1" style={{ color: "#2D2A26" }}>
+                    标签
+                  </label>
+                  <Input
+                    placeholder="用逗号分隔"
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                    className="border rounded-md text-xs sm:text-sm"
+                    style={{
+                      borderColor: "#9C9590",
+                      backgroundColor: "transparent",
+                      color: "#2D2A26",
+                      padding: "6px 8px",
+                    }}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = "#A67C52")}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = "#9C9590")}
+                  />
+                  {sectionTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {sectionTags
+                        .filter((t) => !tags.split(",").map((s) => s.trim()).includes(t))
+                        .slice(0, 8)
+                        .map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => {
+                              const existing = tags
+                                .split(",")
+                                .map((s) => s.trim())
+                                .filter(Boolean);
+                              setTags(existing.concat(t).join(", "));
+                            }}
+                            className="text-xs px-2 py-0.5 rounded-full border transition-colors"
+                            style={{
+                              borderColor: "#A67C52",
+                              color: "#A67C52",
+                              backgroundColor: "transparent",
+                            }}
+                          >
+                            + {t}
+                          </button>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Topic + Sort order row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {filteredTopics.length > 0 && (
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium mb-1" style={{ color: "#2D2A26" }}>
+                      主题/专栏
+                    </label>
+                    <select
+                      value={topicId}
+                      onChange={(e) => setTopicId(e.target.value)}
+                      className="w-full px-3 py-1.5 border rounded-md text-xs sm:text-sm bg-transparent"
+                      style={{ borderColor: "#9C9590", color: "#2D2A26" }}
+                    >
+                      <option value="">无主题</option>
+                      {filteredTopics.map((t) => (
+                        <option key={t.id} value={t.id}>{t.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium mb-1" style={{ color: "#2D2A26" }}>
+                    排序号
+                  </label>
+                  <p className="text-xs mb-1" style={{ color: "#9C9590" }}>数字越小越靠前，置顶用负数</p>
+                  <Input
+                    type="number"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(Number(e.target.value))}
+                    className="border rounded-md text-xs sm:text-sm"
+                    style={{
+                      borderColor: "#9C9590",
+                      backgroundColor: "transparent",
+                      color: "#2D2A26",
+                      padding: "6px 8px",
+                    }}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = "#A67C52")}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = "#9C9590")}
+                  />
+                </div>
+              </div>
+
+              {/* Change summary */}
+              <div>
+                <label className="block text-xs sm:text-sm font-medium mb-1" style={{ color: "#2D2A26" }}>
+                  本次修改说明
+                </label>
+                <textarea
+                  placeholder="简述本次修改内容（发布时保存为版本记录）"
+                  value={changeSummary}
+                  onChange={(e) => setChangeSummary(e.target.value)}
+                  rows={2}
+                  className="w-full border rounded-md resize-none text-xs sm:text-sm p-2"
+                  style={{
+                    borderColor: "#9C9590",
+                    backgroundColor: "transparent",
+                    color: "#2D2A26",
+                  }}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = "#A67C52")}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "#9C9590")}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ====== Editor — fills remaining space, scrolls independently ====== */}
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
           <LazyTipTapEditor
             initialContent={content}
             onChange={setContent}
