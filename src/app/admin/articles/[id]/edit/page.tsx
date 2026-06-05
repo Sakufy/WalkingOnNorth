@@ -1,5 +1,6 @@
 "use client";
 
+// v2: stacked layout — metadata header + full-width editor
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
