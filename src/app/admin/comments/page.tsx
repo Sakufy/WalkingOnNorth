@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { fetchWithCache } from "@/lib/client-cache";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -31,13 +32,24 @@ export default function AdminCommentsPage() {
   const [tab, setTab] = useState("all");
   const [deleteTarget, setDeleteTarget] = useState<Comment | null>(null);
 
-  const fetchComments = useCallback(async () => {
+  const fetchComments = useCallback(async (skipCache = false) => {
     setLoading(true);
     const statusParam = tab === "pending" ? "?status=pending" : "";
-    const res = await fetch(`/api/comments${statusParam}`);
-    if (res.ok) {
-      const data = await res.json();
+    const cacheKey = `admin_comments_${tab}`;
+
+    const fetcher = async () => {
+      const res = await fetch(`/api/comments${statusParam}`);
+      if (res.ok) return await res.json();
+      throw new Error("Failed");
+    };
+
+    try {
+      const data = skipCache
+        ? await fetcher()
+        : await fetchWithCache(cacheKey, fetcher, 60);
       setComments(data.items ?? []);
+    } catch {
+      // Keep stale data
     }
     setLoading(false);
   }, [tab]);
@@ -47,37 +59,22 @@ export default function AdminCommentsPage() {
   }, [fetchComments]);
 
   const handleApprove = async (id: string) => {
-    await fetch(`/api/comments/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "approved" }),
-    });
-    fetchComments();
+    await fetch(`/api/comments/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: "approved" }) });
+    fetchComments(true);
   };
-
   const handleReject = async (id: string) => {
-    await fetch(`/api/comments/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "rejected" }),
-    });
-    fetchComments();
+    await fetch(`/api/comments/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: "rejected" }) });
+    fetchComments(true);
   };
-
   const handleDelete = async () => {
     if (!deleteTarget) return;
     await fetch(`/api/comments/${deleteTarget.id}`, { method: "DELETE" });
     setDeleteTarget(null);
-    fetchComments();
+    fetchComments(true);
   };
-
   const handleToggleHighValue = async (comment: Comment) => {
-    await fetch(`/api/comments/${comment.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isHighValue: !comment.isHighValue }),
-    });
-    fetchComments();
+    await fetch(`/api/comments/${comment.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ isHighValue: !comment.isHighValue }) });
+    fetchComments(true);
   };
 
   const STATUS_BADGE: Record<string, { bg: string; color: string; label: string }> = {

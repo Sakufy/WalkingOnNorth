@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { fetchWithCache } from "@/lib/client-cache";
 import {
   Table,
   TableBody,
@@ -65,7 +66,7 @@ export default function AdminArticlesPage() {
 
   const limit = 20;
 
-  const fetchPosts = useCallback(async () => {
+  const fetchPosts = useCallback(async (skipCache = false) => {
     setLoading(true);
     const params = new URLSearchParams();
     params.set("page", String(page));
@@ -74,11 +75,25 @@ export default function AdminArticlesPage() {
     if (statusFilter) params.set("status", statusFilter);
     if (sectionFilter) params.set("section", sectionFilter);
 
-    const res = await fetch(`/api/articles?${params}`);
-    if (res.ok) {
-      const data = await res.json();
+    const cacheKey = `admin_articles_${page}_${search}_${statusFilter}_${sectionFilter}`;
+
+    const fetcher = async () => {
+      const res = await fetch(`/api/articles?${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      }
+      throw new Error("Failed to fetch");
+    };
+
+    try {
+      const data = skipCache
+        ? await fetcher()
+        : await fetchWithCache(cacheKey, fetcher, 120);
       setPosts(data.items);
       setTotal(data.total);
+    } catch {
+      // Keep stale data on error
     }
     setLoading(false);
   }, [page, search, statusFilter, sectionFilter]);
@@ -93,7 +108,7 @@ export default function AdminArticlesPage() {
     const res = await fetch(`/api/articles/${deleteTarget.id}`, { method: "DELETE" });
     if (res.ok) {
       setDeleteTarget(null);
-      fetchPosts();
+      fetchPosts(true); // skip cache after mutation
     }
     setDeleting(false);
   };
@@ -104,7 +119,7 @@ export default function AdminArticlesPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isFeatured: !post.isFeatured }),
     });
-    fetchPosts();
+    fetchPosts(true); // skip cache after mutation
   };
 
   const totalPages = Math.ceil(total / limit);
