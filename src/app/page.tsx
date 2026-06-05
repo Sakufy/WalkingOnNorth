@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { getSections, getFeaturedPosts, getPageContent } from "@/lib/db/queries";
 import { Home, type HomePageData } from "@/components/pages/HomePage";
-
-// Vercel build network blocks Turso hrana protocol.
-// Force runtime rendering so DB queries happen after deployment.
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "北行之路 - 个人成长专属内容平台",
@@ -18,6 +15,9 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  // headers() forces dynamic rendering — skips static pre-render
+  // so Turso DB queries only happen at runtime (after deploy).
+  await headers();
   const [sections, featuredPosts, homePage] = await Promise.all([
     getSections(),
     getFeaturedPosts(5),
