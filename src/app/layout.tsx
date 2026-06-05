@@ -95,6 +95,9 @@ export default function RootLayout({
       className={`h-full antialiased ${notoSerifSC.variable} ${sourceSerif4.variable} ${notoSansSC.variable}`}
     >
       <head>
+        {/* Preconnect to font CDN — browser starts DNS+TCP before CSS @import is parsed */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
