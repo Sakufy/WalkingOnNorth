@@ -184,100 +184,88 @@ function CommentTable({
   showStatus?: boolean;
 }) {
   return (
-    <div className="rounded-lg border overflow-x-auto" style={{ borderColor: "#E8E3DC" }}>
-      <Table>
-        <TableHeader>
-          <TableRow style={{ borderColor: "#E8E3DC" }}>
-            <TableHead style={{ color: "#2D2A26" }}>评论内容</TableHead>
-            <TableHead style={{ color: "#2D2A26" }}>文章</TableHead>
-            <TableHead style={{ color: "#2D2A26" }}>用户</TableHead>
-            <TableHead style={{ color: "#2D2A26" }}>字数</TableHead>
-            {showStatus && <TableHead style={{ color: "#2D2A26" }}>状态</TableHead>}
-            <TableHead style={{ color: "#2D2A26" }}>时间</TableHead>
-            <TableHead style={{ color: "#2D2A26" }}>操作</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {comments.map((c) => (
-            <TableRow key={c.id} style={{ borderColor: "#E8E3DC" }}>
-              <TableCell className="max-w-xs">
-                <p className="truncate text-sm" style={{ color: "#2D2A26" }}>
-                  {c.content.length > 80 ? c.content.slice(0, 80) + "…" : c.content}
-                </p>
-              </TableCell>
-              <TableCell className="text-sm" style={{ color: "#9C9590" }}>
-                {c.articleTitle ?? "—"}
-              </TableCell>
-              <TableCell className="text-sm" style={{ color: "#9C9590" }}>
-                {c.userName ?? "—"}
-              </TableCell>
-              <TableCell className="text-sm" style={{ color: "#9C9590" }}>
-                {c.charCount || c.content.length}
-              </TableCell>
-              {showStatus && (
-                <TableCell>
-                  {(() => {
-                    const s = { pending: "#C49A3C20", approved: "#6B8F5E20", rejected: "#B8545020" };
-                    const sc = { pending: "#C49A3C", approved: "#6B8F5E", rejected: "#B85450" };
-                    const sl = { pending: "待审核", approved: "已通过", rejected: "已拒绝" };
-                    return (
-                      <Badge
-                        className="text-xs rounded-full"
-                        style={{ backgroundColor: s[c.status], color: sc[c.status] }}
-                      >
-                        {sl[c.status]}
-                      </Badge>
-                    );
-                  })()}
-                </TableCell>
-              )}
-              <TableCell className="text-xs" style={{ color: "#9C9590" }}>
-                {new Date(c.createdAt).toLocaleDateString("zh-CN")}
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-1 flex-wrap">
-                  {c.status === "pending" && (
-                    <>
-                      <button
-                        title="通过"
-                        onClick={() => onApprove(c.id)}
-                        className="p-1 rounded hover:bg-[#6B8F5E20]"
-                        style={{ color: "#6B8F5E" }}
-                      >
-                        <Check size={16} />
-                      </button>
-                      <button
-                        title="拒绝"
-                        onClick={() => onReject(c.id)}
-                        className="p-1 rounded hover:bg-[#B8545020]"
-                        style={{ color: "#B85450" }}
-                      >
-                        <X size={16} />
-                      </button>
-                    </>
-                  )}
-                  <button
-                    title="高价值"
-                    onClick={() => onToggleHighValue(c)}
-                    className="p-1 rounded hover:bg-[#F5F1EB]"
-                    style={{ color: c.isHighValue ? "#A67C52" : "#9C9590" }}
-                  >
-                    <Star size={16} fill={c.isHighValue ? "#A67C52" : "none"} />
-                  </button>
-                  <button
-                    title="删除"
-                    onClick={() => onDelete(c)}
-                    className="p-1 rounded hover:bg-[#F5F1EB]"
-                    style={{ color: "#9C9590" }}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </TableCell>
+    <>
+      {/* ====== Desktop table (sm+) ====== */}
+      <div className="hidden sm:block rounded-lg border overflow-x-auto" style={{ borderColor: "#E8E3DC" }}>
+        <Table>
+          <TableHeader>
+            <TableRow style={{ borderColor: "#E8E3DC" }}>
+              <TableHead style={{ color: "#2D2A26" }}>评论内容</TableHead>
+              <TableHead style={{ color: "#2D2A26" }}>文章</TableHead>
+              <TableHead style={{ color: "#2D2A26" }}>用户</TableHead>
+              <TableHead style={{ color: "#2D2A26" }}>字数</TableHead>
+              {showStatus && <TableHead style={{ color: "#2D2A26" }}>状态</TableHead>}
+              <TableHead style={{ color: "#2D2A26" }}>时间</TableHead>
+              <TableHead style={{ color: "#2D2A26" }}>操作</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {comments.map((c) => (
+              <TableRow key={c.id} style={{ borderColor: "#E8E3DC" }}>
+                <TableCell className="max-w-xs"><p className="truncate text-sm" style={{ color: "#2D2A26" }}>{c.content.length > 80 ? c.content.slice(0, 80) + "…" : c.content}</p></TableCell>
+                <TableCell className="text-sm" style={{ color: "#9C9590" }}>{c.articleTitle ?? "—"}</TableCell>
+                <TableCell className="text-sm" style={{ color: "#9C9590" }}>{c.userName ?? "—"}</TableCell>
+                <TableCell className="text-sm" style={{ color: "#9C9590" }}>{c.charCount || c.content.length}</TableCell>
+                {showStatus && (
+                  <TableCell>
+                    {(() => {
+                      const s = { pending: "#C49A3C20", approved: "#6B8F5E20", rejected: "#B8545020" };
+                      const sc = { pending: "#C49A3C", approved: "#6B8F5E", rejected: "#B85450" };
+                      const sl = { pending: "待审核", approved: "已通过", rejected: "已拒绝" };
+                      return <Badge className="text-xs rounded-full" style={{ backgroundColor: s[c.status], color: sc[c.status] }}>{sl[c.status]}</Badge>;
+                    })()}
+                  </TableCell>
+                )}
+                <TableCell className="text-xs" style={{ color: "#9C9590" }}>{new Date(c.createdAt).toLocaleDateString("zh-CN")}</TableCell>
+                <TableCell>
+                  <div className="flex gap-1 flex-wrap">
+                    {c.status === "pending" && (
+                      <>
+                        <button title="通过" onClick={() => onApprove(c.id)} className="p-1 rounded hover:bg-[#6B8F5E20]" style={{ color: "#6B8F5E" }}><Check size={16} /></button>
+                        <button title="拒绝" onClick={() => onReject(c.id)} className="p-1 rounded hover:bg-[#B8545020]" style={{ color: "#B85450" }}><X size={16} /></button>
+                      </>
+                    )}
+                    <button title="高价值" onClick={() => onToggleHighValue(c)} className="p-1 rounded hover:bg-[#F5F1EB]" style={{ color: c.isHighValue ? "#A67C52" : "#9C9590" }}><Star size={16} fill={c.isHighValue ? "#A67C52" : "none"} /></button>
+                    <button title="删除" onClick={() => onDelete(c)} className="p-1 rounded hover:bg-[#F5F1EB]" style={{ color: "#9C9590" }}><Trash2 size={16} /></button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* ====== Mobile cards (below sm) ====== */}
+      <div className="sm:hidden space-y-2">
+        {comments.map((c) => {
+          const s = { pending: "#C49A3C20", approved: "#6B8F5E20", rejected: "#B8545020" };
+          const sc = { pending: "#C49A3C", approved: "#6B8F5E", rejected: "#B85450" };
+          const sl = { pending: "待审核", approved: "已通过", rejected: "已拒绝" };
+          return (
+            <div key={c.id} className="rounded-lg border p-3 space-y-2" style={{ borderColor: "#E8E3DC" }}>
+              <p className="text-sm line-clamp-3" style={{ color: "#2D2A26" }}>{c.content}</p>
+              <div className="flex items-center gap-2 text-xs" style={{ color: "#9C9590" }}>
+                <span>{c.userName ?? "—"}</span>
+                <span>·</span>
+                <span>{c.articleTitle ?? "—"}</span>
+                {showStatus && (
+                  <span className="text-xs px-2 py-0.5 rounded-full ml-auto" style={{ backgroundColor: s[c.status], color: sc[c.status] }}>{sl[c.status]}</span>
+                )}
+              </div>
+              <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: "#E8E3DC" }}>
+                {c.status === "pending" && (
+                  <>
+                    <button onClick={() => onApprove(c.id)} className="flex-1 text-xs py-2 rounded" style={{ color: "#F5F1EB", backgroundColor: "#6B8F5E" }}>通过</button>
+                    <button onClick={() => onReject(c.id)} className="flex-1 text-xs py-2 rounded" style={{ color: "#F5F1EB", backgroundColor: "#B85450" }}>拒绝</button>
+                  </>
+                )}
+                <button onClick={() => onToggleHighValue(c)} className="px-3 py-2 rounded border text-xs" style={{ borderColor: c.isHighValue ? "#A67C52" : "#9C9590", color: c.isHighValue ? "#A67C52" : "#9C9590" }}>{c.isHighValue ? "★" : "☆"}</button>
+                <button onClick={() => onDelete(c)} className="px-3 py-2 rounded border text-xs" style={{ borderColor: "#B85450", color: "#B85450" }}>删除</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }

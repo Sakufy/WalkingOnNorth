@@ -229,124 +229,72 @@ export default function AdminArticlesPage() {
           </p>
         </div>
       ) : (
-        <div className="rounded-lg border overflow-x-auto" style={{ borderColor: "#E8E3DC" }}>
-          <Table>
-            <TableHeader>
-              <TableRow style={{ borderColor: "#E8E3DC" }}>
-                <TableHead style={{ color: "#2D2A26", fontWeight: 600 }}>标题</TableHead>
-                <TableHead style={{ color: "#2D2A26", fontWeight: 600 }}>板块</TableHead>
-                <TableHead style={{ color: "#2D2A26", fontWeight: 600 }}>状态</TableHead>
-                <TableHead style={{ color: "#2D2A26", fontWeight: 600 }}>更新时间</TableHead>
-                <TableHead style={{ color: "#2D2A26", fontWeight: 600 }} className="text-right">
-                  操作
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {posts.map((post) => (
-                <TableRow
-                  key={post.id}
-                  style={{ borderColor: "#E8E3DC" }}
-                  className="hover:bg-[#F5F1EB] transition-colors"
-                >
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/admin/articles/${post.id}/edit`}
-                        className="font-medium hover:underline"
-                        style={{ color: "#2D2A26" }}
-                      >
-                        {post.title}
-                      </Link>
-                      {post.isFeatured && (
-                        <Star size={14} style={{ color: "#A67C52" }} fill="#A67C52" />
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className="rounded px-2 py-0.5 text-xs"
-                      style={{
-                        borderColor: "#9C9590",
-                        color: "#2D2A26",
-                        backgroundColor: "transparent",
-                      }}
-                    >
-                      {SECTION_LABELS[post.section]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className="text-xs px-2 py-0.5 rounded-full"
-                      style={{
-                        backgroundColor:
-                          post.status === "published" ? "#6B8F5E20" : "#C49A3C20",
-                        color: post.status === "published" ? "#6B8F5E" : "#C49A3C",
-                      }}
-                    >
-                      {STATUS_LABELS[post.status]}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-sm" style={{ color: "#9C9590" }}>
-                    {post.updatedAt
-                      ? new Date(post.updatedAt).toLocaleDateString("zh-CN")
-                      : new Date(post.createdAt).toLocaleDateString("zh-CN")}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1 flex-wrap">
-                      <button
-                        type="button"
-                        title="编辑"
-                        onClick={() => router.push(`/admin/articles/${post.id}/edit`)}
-                        className="p-1.5 rounded hover:bg-[#F5F1EB] transition-colors"
-                        style={{ color: "#9C9590" }}
-                      >
-                        <Pencil size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        title="版本历史"
-                        onClick={() => router.push(`/admin/articles/${post.id}/versions`)}
-                        className="p-1.5 rounded hover:bg-[#F5F1EB] transition-colors"
-                        style={{ color: "#9C9590" }}
-                      >
-                        <History size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        title="版本对比"
-                        onClick={() => router.push(`/admin/articles/${post.id}/diff`)}
-                        className="p-1.5 rounded hover:bg-[#F5F1EB] transition-colors"
-                        style={{ color: "#9C9590" }}
-                      >
-                        <GitCompare size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        title={post.isFeatured ? "取消精选" : "设为精选"}
-                        onClick={() => handleToggleFeatured(post)}
-                        className="p-1.5 rounded hover:bg-[#F5F1EB] transition-colors"
-                        style={{ color: post.isFeatured ? "#A67C52" : "#9C9590" }}
-                      >
-                        <Star size={16} fill={post.isFeatured ? "#A67C52" : "none"} />
-                      </button>
-                      <button
-                        type="button"
-                        title="删除"
-                        onClick={() => setDeleteTarget(post)}
-                        className="p-1.5 rounded hover:bg-[#F5F1EB] transition-colors"
-                        style={{ color: "#9C9590" }}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </TableCell>
+        <>
+          {/* ====== Desktop table (sm+) ====== */}
+          <div className="hidden sm:block rounded-lg border overflow-x-auto" style={{ borderColor: "#E8E3DC" }}>
+            <Table>
+              <TableHeader>
+                <TableRow style={{ borderColor: "#E8E3DC" }}>
+                  <TableHead style={{ color: "#2D2A26", fontWeight: 600 }}>标题</TableHead>
+                  <TableHead style={{ color: "#2D2A26", fontWeight: 600 }}>板块</TableHead>
+                  <TableHead style={{ color: "#2D2A26", fontWeight: 600 }}>状态</TableHead>
+                  <TableHead style={{ color: "#2D2A26", fontWeight: 600 }}>更新时间</TableHead>
+                  <TableHead style={{ color: "#2D2A26", fontWeight: 600 }} className="text-right">操作</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {posts.map((post) => (
+                  <TableRow key={post.id} style={{ borderColor: "#E8E3DC" }} className="hover:bg-[#F5F1EB]">
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Link href={`/admin/articles/${post.id}/edit`} className="font-medium hover:underline" style={{ color: "#2D2A26" }}>{post.title}</Link>
+                        {post.isFeatured && <Star size={14} style={{ color: "#A67C52" }} fill="#A67C52" />}
+                      </div>
+                    </TableCell>
+                    <TableCell><Badge variant="outline" className="rounded px-2 py-0.5 text-xs" style={{ borderColor: "#9C9590", color: "#2D2A26", backgroundColor: "transparent" }}>{SECTION_LABELS[post.section]}</Badge></TableCell>
+                    <TableCell><span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: post.status === "published" ? "#6B8F5E20" : "#C49A3C20", color: post.status === "published" ? "#6B8F5E" : "#C49A3C" }}>{STATUS_LABELS[post.status]}</span></TableCell>
+                    <TableCell className="text-sm" style={{ color: "#9C9590" }}>{post.updatedAt ? new Date(post.updatedAt).toLocaleDateString("zh-CN") : new Date(post.createdAt).toLocaleDateString("zh-CN")}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1 flex-wrap">
+                        <button type="button" title="编辑" onClick={() => router.push(`/admin/articles/${post.id}/edit`)} className="p-1.5 rounded hover:bg-[#F5F1EB]" style={{ color: "#9C9590" }}><Pencil size={16} /></button>
+                        <button type="button" title="版本历史" onClick={() => router.push(`/admin/articles/${post.id}/versions`)} className="p-1.5 rounded hover:bg-[#F5F1EB]" style={{ color: "#9C9590" }}><History size={16} /></button>
+                        <button type="button" title="版本对比" onClick={() => router.push(`/admin/articles/${post.id}/diff`)} className="p-1.5 rounded hover:bg-[#F5F1EB]" style={{ color: "#9C9590" }}><GitCompare size={16} /></button>
+                        <button type="button" title={post.isFeatured ? "取消精选" : "设为精选"} onClick={() => handleToggleFeatured(post)} className="p-1.5 rounded hover:bg-[#F5F1EB]" style={{ color: post.isFeatured ? "#A67C52" : "#9C9590" }}><Star size={16} fill={post.isFeatured ? "#A67C52" : "none"} /></button>
+                        <button type="button" title="删除" onClick={() => setDeleteTarget(post)} className="p-1.5 rounded hover:bg-[#F5F1EB]" style={{ color: "#B85450" }}><Trash2 size={16} /></button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* ====== Mobile cards (below sm) ====== */}
+          <div className="sm:hidden space-y-2">
+            {posts.map((post) => (
+              <div key={post.id} className="rounded-lg border p-3 space-y-2" style={{ borderColor: "#E8E3DC" }}>
+                <div className="flex items-start justify-between gap-2">
+                  <Link href={`/admin/articles/${post.id}/edit`} className="font-medium text-sm flex-1 line-clamp-2" style={{ color: "#2D2A26" }}>
+                    {post.isFeatured && <Star size={12} className="inline mr-1" style={{ color: "#A67C52" }} fill="#A67C52" />}
+                    {post.title}
+                  </Link>
+                  <span className="text-xs px-2 py-0.5 rounded-full shrink-0" style={{ backgroundColor: post.status === "published" ? "#6B8F5E20" : "#C49A3C20", color: post.status === "published" ? "#6B8F5E" : "#C49A3C" }}>{STATUS_LABELS[post.status]}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs" style={{ color: "#9C9590" }}>
+                  <span>{SECTION_LABELS[post.section]}</span>
+                  <span>·</span>
+                  <span>{post.updatedAt ? new Date(post.updatedAt).toLocaleDateString("zh-CN") : new Date(post.createdAt).toLocaleDateString("zh-CN")}</span>
+                </div>
+                <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: "#E8E3DC" }}>
+                  <button type="button" onClick={() => router.push(`/admin/articles/${post.id}/edit`)} className="flex-1 text-center text-xs py-2 rounded" style={{ color: "#F5F1EB", backgroundColor: "#2D2A26" }}>编辑</button>
+                  <button type="button" onClick={() => router.push(`/admin/articles/${post.id}/versions`)} className="px-3 py-2 rounded border text-xs" style={{ borderColor: "#9C9590", color: "#2D2A26" }}>版本</button>
+                  <button type="button" onClick={() => handleToggleFeatured(post)} className="px-3 py-2 rounded border text-xs" style={{ borderColor: post.isFeatured ? "#A67C52" : "#9C9590", color: post.isFeatured ? "#A67C52" : "#9C9590" }}>{post.isFeatured ? "★" : "☆"}</button>
+                  <button type="button" onClick={() => setDeleteTarget(post)} className="px-3 py-2 rounded border text-xs" style={{ borderColor: "#B85450", color: "#B85450" }}>删除</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {/* Pagination */}
