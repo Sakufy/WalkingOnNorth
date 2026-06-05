@@ -41,6 +41,12 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "北行之路",
+    statusBarStyle: "default",
+  },
   title: {
     default: "北行之路 - 个人成长专属内容平台",
     template: "%s | 北行之路",

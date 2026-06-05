@@ -1,0 +1,10 @@
+{
+  "name": "北行之路",
+  "short_name": "北行之路",
+  "description": "个人成长专属内容平台",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F1EB",
+  "theme_color": "#2D2A26",
+  "icons": []
+}
