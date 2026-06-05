@@ -6,6 +6,9 @@ import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { ArticleDetail } from "@/components/pages/ArticleDetailPage";
 
+// ISR: cache article pages 4 hours (articles rarely change after publish)
+export const revalidate = 14400;
+
 const SECTION_NAMES: Record<string, string> = {
   explore: "自我探索",
   improve: "自我提升",

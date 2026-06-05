@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { getSectionPosts, getTopicsBySection, getPageContent } from "@/lib/db/queries";
 import { Section, type SectionPageData } from "@/components/pages/SectionPage";
 
+// ISR: cache section pages 2 hours
+export const revalidate = 7200;
+
 type DbSection = "explore" | "improve" | "realize";
 
 const SLUG_TO_DB: Record<string, DbSection> = {
