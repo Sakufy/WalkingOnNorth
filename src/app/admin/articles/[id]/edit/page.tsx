@@ -147,7 +147,7 @@ export default function EditArticlePage() {
   }
 
   return (
-    <div className="h-[calc(100vh-64px)] flex flex-col">
+    <div className="h-[calc(100vh-48px)] flex flex-col">
       {/* ====== Top bar ====== */}
       <div
         className="flex items-center justify-between px-4 sm:px-6 py-3 border-b shrink-0"

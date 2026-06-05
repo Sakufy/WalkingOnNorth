@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Star } from "lucide-react";
 
 export default function UsersTab() {
@@ -32,42 +31,41 @@ export default function UsersTab() {
   if (loading) return <div className="text-center py-12" style={{ color: "#9C9590" }}>加载中…</div>;
 
   return (
-    <div className="rounded-lg border overflow-hidden" style={{ borderColor: "#E8E3DC" }}>
-      <Table>
-        <TableHeader>
-          <TableRow style={{ borderColor: "#E8E3DC" }}>
-            <TableHead style={{ color: "#2D2A26" }}>昵称</TableHead>
-            <TableHead style={{ color: "#2D2A26" }}>邮箱</TableHead>
-            <TableHead style={{ color: "#2D2A26" }}>角色</TableHead>
-            <TableHead style={{ color: "#2D2A26" }}>注册时间</TableHead>
-            <TableHead style={{ color: "#2D2A26" }}>高价值</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users.map((u) => (
-            <TableRow key={u.id} style={{ borderColor: "#E8E3DC" }}>
-              <TableCell style={{ color: "#2D2A26" }}>{u.nickname}</TableCell>
-              <TableCell className="text-sm" style={{ color: "#9C9590" }}>{u.email}</TableCell>
-              <TableCell>
-                <span className="text-xs px-2 py-0.5 rounded-full" style={{
+    <div className="space-y-3">
+      {users.map((u) => (
+        <div
+          key={u.id}
+          className="flex items-center justify-between p-4 rounded-lg border transition-colors hover:bg-[#F5F1EB]"
+          style={{ borderColor: "#E8E3DC" }}
+        >
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-sm" style={{ color: "#2D2A26" }}>{u.nickname}</span>
+              <span
+                className="text-xs px-2 py-0.5 rounded-full"
+                style={{
                   backgroundColor: u.role === "admin" ? "#A67C5220" : "#9C959020",
                   color: u.role === "admin" ? "#A67C52" : "#9C9590",
-                }}>
-                  {u.role === "admin" ? "管理员" : "用户"}
-                </span>
-              </TableCell>
-              <TableCell className="text-xs" style={{ color: "#9C9590" }}>
-                {new Date(u.createdAt).toLocaleDateString("zh-CN")}
-              </TableCell>
-              <TableCell>
-                <button onClick={() => toggleHighValue(u)} style={{ color: u.isHighValue ? "#A67C52" : "#9C9590" }}>
-                  <Star size={16} fill={u.isHighValue ? "#A67C52" : "none"} />
-                </button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                }}
+              >{u.role === "admin" ? "管理员" : "用户"}</span>
+              {u.isHighValue && (
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: "#A67C5220", color: "#A67C52" }}>高价值</span>
+              )}
+            </div>
+            <p className="text-xs mt-1" style={{ color: "#9C9590" }}>
+              {u.email} · {new Date(u.createdAt).toLocaleDateString("zh-CN")} 加入
+            </p>
+          </div>
+          <button
+            onClick={() => toggleHighValue(u)}
+            className="p-2 rounded hover:bg-[#F5F1EB] shrink-0 transition-colors"
+            style={{ color: u.isHighValue ? "#A67C52" : "#9C9590" }}
+            title={u.isHighValue ? "取消高价值" : "设为高价值"}
+          >
+            <Star size={18} fill={u.isHighValue ? "#A67C52" : "none"} />
+          </button>
+        </div>
+      ))}
       {users.length === 0 && <p className="text-center py-8" style={{ color: "#9C9590" }}>暂无用户</p>}
     </div>
   );

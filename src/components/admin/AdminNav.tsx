@@ -15,34 +15,38 @@ export default function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-b border-border bg-background">
-      <div className="max-w-5xl mx-auto px-6 flex items-center gap-1">
+    <nav className="border-b" style={{ borderColor: "rgba(156,149,144,0.15)", backgroundColor: "#FAFAF8" }}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center h-[48px]">
         <Link
           href="/admin"
-          className="text-sm font-heading text-text-primary px-2 mr-4"
+          className="text-base font-semibold mr-6 shrink-0"
+          style={{ fontFamily: '"Noto Serif SC", serif', color: "#2D2A26" }}
         >
           后台
         </Link>
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          const isActive =
-            href === "/admin"
-              ? pathname === "/admin"
-              : pathname.startsWith(href);
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-1.5 px-3 py-3 text-sm border-b-2 transition-colors duration-150 ${
-                isActive
-                  ? "border-primary text-primary"
-                  : "border-transparent text-text-secondary hover:text-text-primary"
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span className="hidden sm:inline">{label}</span>
-            </Link>
-          );
-        })}
+        <div className="flex items-center gap-1 h-full">
+          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+            const isActive =
+              href === "/admin"
+                ? pathname === "/admin"
+                : pathname.startsWith(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="flex items-center gap-1.5 px-3 h-full text-sm border-b-2 transition-colors"
+                style={{
+                  borderColor: isActive ? "#A67C52" : "transparent",
+                  color: isActive ? "#2D2A26" : "#9C9590",
+                  fontWeight: isActive ? 500 : 400,
+                }}
+              >
+                <Icon className="w-4 h-4" />
+                <span className="hidden sm:inline">{label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );
