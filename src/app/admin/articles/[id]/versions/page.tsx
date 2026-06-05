@@ -50,11 +50,11 @@ export default function VersionsPage() {
     }
     setSelectedVersion(version);
 
-    // Fetch version content
-    const res = await fetch(`/api/articles/${postId}`);
+    // Fetch version content from correct API
+    const res = await fetch(`/api/articles/${postId}/versions/${version.id}`);
     if (res.ok) {
-      const post = await res.json();
-      setVersionContent(post.content ?? "");
+      const data = await res.json();
+      setVersionContent(data.content ?? "");
     }
   };
 

@@ -325,6 +325,7 @@ export function ArticleDetail({ article }: {
   const [versions, setVersions] = useState<Array<{ id: string; versionNumber: number; changeSummary: string | null; createdAt: string; isCurrent: boolean }>>([]);
   const [versionContent, setVersionContent] = useState<string | null>(null);
   const readingRef = useRef<HTMLDivElement>(null);
+  const versionCache = useRef<Map<string, string>>(new Map());
 
   // Fetch comments
   useEffect(() => {
@@ -352,9 +353,21 @@ export function ArticleDetail({ article }: {
       return;
     }
     setActiveVersionId(id);
+
+    // Serve from cache if already fetched
+    const cached = versionCache.current.get(id);
+    if (cached !== undefined) {
+      setVersionContent(cached || null);
+      return;
+    }
+
     fetch(`/api/articles/${article.id}/versions/${id}`)
       .then((r) => r.json())
-      .then((data) => setVersionContent(data.content ?? null))
+      .then((data) => {
+        const content = data.content ?? "";
+        versionCache.current.set(id, content);
+        setVersionContent(content || null);
+      })
       .catch(() => {});
   }, [article.id, activeVersionId]);
 
