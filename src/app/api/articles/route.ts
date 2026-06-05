@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { posts } from "@/lib/db/schema";
 import { eq, like, and, desc, count } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid";
+
+
 
 /**
  * GET /api/articles
@@ -107,7 +108,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const id = uuidv4();
+  const id = crypto.randomUUID();
   // slug = id prefix until explicitly set
   const slug = id.slice(0, 8);
 

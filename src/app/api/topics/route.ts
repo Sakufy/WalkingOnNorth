@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { topics } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid";
+
+
 
 /** GET /api/topics */
 export async function GET(request: NextRequest) {
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
   const [topic] = await db
     .insert(topics)
     .values({
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       name,
       description: description ?? null,
       section,

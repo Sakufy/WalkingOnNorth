@@ -3,7 +3,6 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { posts, postVersions, paragraphs } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid";
 import { injectParagraphAnchors, estimateReadingTime } from "@/lib/paragraph";
 
 /**
@@ -79,7 +78,7 @@ export async function POST(
     .returning();
 
   // 6. Create version snapshot
-  const versionId = uuidv4();
+  const versionId = crypto.randomUUID();
   await db.insert(postVersions).values({
     id: versionId,
     postId,

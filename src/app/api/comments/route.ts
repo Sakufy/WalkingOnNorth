@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { comments, users, posts } from "@/lib/db/schema";
 import { eq, and, desc, sql, like } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid";
+
+
 
 const LONG_COMMENT_THRESHOLD = 200;
 
@@ -94,7 +95,7 @@ export async function POST(request: NextRequest) {
   const [comment] = await db
     .insert(comments)
     .values({
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       postId,
       userId: session.user.id as string,
       paragraphId: paragraphId ?? null,

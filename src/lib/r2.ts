@@ -3,7 +3,8 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
-import { v4 as uuidv4 } from "uuid";
+
+
 
 const r2Client = new S3Client({
   region: "auto",
@@ -26,7 +27,7 @@ export async function uploadImage(
   contentType: string
 ): Promise<string> {
   const ext = contentType === "image/png" ? "png" : "webp";
-  const key = `${articleId}/${uuidv4()}.${ext}`;
+  const key = `${articleId}/${crypto.randomUUID()}.${ext}`;
 
   await r2Client.send(
     new PutObjectCommand({

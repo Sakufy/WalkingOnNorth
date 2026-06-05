@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid";
+
+
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
     const passwordHash = await hash(String(password), 12);
 
     await db.insert(users).values({
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       nickname: String(name).trim(),
       email: normalizedEmail,
       passwordHash,
