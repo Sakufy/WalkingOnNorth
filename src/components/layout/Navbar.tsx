@@ -1,36 +1,36 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type RefObject } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 
-/** Track scroll direction for auto-hide navbar on mobile */
-function useScrollDirection() {
-  const [hidden, setHidden] = useState(false);
-  const lastY = useRef(0);
-
+/** Track scroll direction — pure DOM toggle, zero React re-renders */
+function useScrollDirection(headerRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    let lastY = 0;
     let ticking = false;
+
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
-        const delta = y - lastY.current;
-        // Show if scrolling up, at top, or delta too small (momentum scroll bounce)
-        if (y <= 40) setHidden(false);
-        else if (delta > 8) setHidden(true);
-        else if (delta < -4) setHidden(false);
-        lastY.current = y;
+        const delta = y - lastY;
+        if (y <= 40) el.style.transform = "";
+        else if (delta > 8) el.style.transform = "translateY(-100%)";
+        else if (delta < -4) el.style.transform = "";
+        lastY = y;
         ticking = false;
       });
     };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return hidden;
+  }, [headerRef]);
 }
 
 /* ============================================
@@ -112,18 +112,26 @@ export function Navbar() {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const hidden = useScrollDirection();
+  const headerRef = useRef<HTMLElement>(null);
 
-  // Don't hide on admin pages or when menu/search is open
-  const isAdmin = pathname.startsWith("/admin");
-  const shouldHide = hidden && !menuOpen && !searchOpen && !isAdmin;
+  // Pure-DOM scroll direction — zero React re-renders, zero jank
+  useScrollDirection(headerRef);
+
+  // When menu/search opens on admin pages, lock header visible
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const isAdmin = pathname.startsWith("/admin");
+    if (menuOpen || searchOpen || isAdmin) {
+      el.style.transform = "";
+    }
+  }, [menuOpen, searchOpen, pathname]);
 
   return (
     <>
-      <header style={{
+      <header ref={headerRef} style={{
         position: "sticky", top: 0, zIndex: 40,
         backgroundColor: "var(--bx-neutral)", borderBottom: "1px solid rgba(156,149,144,0.2)",
-        transform: shouldHide ? "translateY(-100%)" : "translateY(0)",
         transition: "transform 200ms ease",
       }}>
         <div style={{
