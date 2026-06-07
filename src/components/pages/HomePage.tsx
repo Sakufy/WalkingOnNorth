@@ -256,7 +256,7 @@ export function Home({
   return (
     <main
       id="main-content"
-      className="pb-20 sm:pb-0"
+      className="pb-20 sm:pb-0 bx-homepage"
       style={{ background: "var(--bx-neutral)" }}
     >
       {/* ==========================================
@@ -266,7 +266,7 @@ export function Home({
         ref={sloganRef}
         className="bx-snap-start"
         style={{
-          minHeight: "100dvh",
+          minHeight: "var(--bx-vh)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -335,7 +335,7 @@ export function Home({
        * ========================================== */}
       <section
         style={{
-          minHeight: "100dvh",
+          minHeight: "var(--bx-vh)",
           maxWidth: "clamp(320px, 75vw, 720px)",
           margin: "0 auto",
           padding: "clamp(32px, 5vh, 64px) clamp(16px, 5vw, 40px)",
@@ -382,7 +382,7 @@ export function Home({
        * ========================================== */}
       <section
         style={{
-          minHeight: "100dvh",
+          minHeight: "var(--bx-vh)",
           maxWidth: "clamp(320px, 90vw, 1100px)",
           margin: "0 auto",
           padding: "clamp(32px, 5vh, 80px) clamp(16px, 5vw, 40px) clamp(32px, 5vh, 80px)",
@@ -456,7 +456,7 @@ export function Home({
        * ========================================== */}
       <section
         style={{
-          minHeight: "100dvh",
+          minHeight: "var(--bx-vh)",
           maxWidth: "clamp(320px, 90vw, 1200px)",
           margin: "0 auto",
           padding: `clamp(32px, 5vh, 80px) clamp(16px, 5vw, 40px) clamp(32px, 5vh, 80px)`,
@@ -501,7 +501,7 @@ export function Home({
        * ========================================== */}
       <section
         style={{
-          minHeight: "100dvh",
+          minHeight: "var(--bx-vh)",
           maxWidth: "760px",
           margin: "0 auto",
           padding: `0 clamp(16px, 5vw, 40px) clamp(60px, 10vh, 120px)`,

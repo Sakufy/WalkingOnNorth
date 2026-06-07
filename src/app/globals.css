@@ -167,6 +167,20 @@
 }
 
 /* ========================================
+ * Homepage viewport height: avoid mobile jank
+ * dvh = dynamic (changes when address bar toggles → reflow → jank)
+ * svh = smallest (address-bar-visible height, never changes → stable)
+ * ======================================== */
+.bx-homepage {
+  --bx-vh: 100dvh;
+}
+@media (max-width: 639px) {
+  .bx-homepage {
+    --bx-vh: 100svh;
+  }
+}
+
+/* ========================================
  * Homepage scroll-snap: only hero snap
  * Proximity = gentle, won't force-stop
  * Mobile disabled — 100dvh changes when address bar shows/hides,
