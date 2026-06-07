@@ -72,6 +72,11 @@ async function main() {
       { title: "务实破局者", trait: "摒弃内耗", text: "相信行动的力量。不是空想家，而是把思考转化为实践的人。" },
       { title: "长期践行者", trait: "追求自洽", text: "不急于求成，相信时间的力量。在持续积累中寻找内心的平衡与完整。" },
     ],
+    sections: {
+      thinking: { subtitle: "向内求索，确立本心", intro: "收录北行世界观、价值观、人生观、能量价值理论，拆解精神内耗与自我觉醒，理清人生选择底层逻辑。", action: "进入探索" },
+      reading: { subtitle: "打磨能力，精进成长", intro: "分享高考自学、大学专业课、身心能量管理全套落地方法论，所有方法均来自亲身实践验证。", action: "查看干货" },
+      journey: { subtitle: "落地价值，向外输出", intro: "记录付费咨询、北行者同行计划筹备、个人项目与软件开发全流程，见证能力落地与价值变现。", action: "了解实践" },
+    },
   });
   await upsert("home", "首页", homeContent);
   console.log("✅ home page seeded");

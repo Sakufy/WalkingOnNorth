@@ -32,7 +32,7 @@ type HomeData = typeof DEFAULT_HOME_DATA;
 type AboutSection = { heading: string; body?: string[]; concepts?: { name: string; text: string }[] };
 
 const PAGES = [
-  { key: "home", label: "首页", sub: "Slogan · 理念 · 人群" },
+  { key: "home", label: "首页", sub: "Slogan · 理念 · 人群 · 板块卡片" },
   { key: "articles", label: "长路纪行", sub: "标题 · 介绍" },
   { key: "sections", label: "板块介绍", sub: "3 板块" },
   { key: "about", label: "关于页", sub: "创作者 · 理念 · 联系" },
@@ -131,6 +131,29 @@ function HomeEditor({
               rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7, marginTop: "8px", fontSize: "0.9375rem" }} />
           </div>
         ))}
+      </div>
+      <div>
+        <div style={{ ...pageLabel, fontSize: "0.9375rem" }}>三大成长板块卡片</div>
+        <p style={{ fontSize: "0.8125rem", color: "#9C9590", marginBottom: "12px" }}>每张卡片的副标题、介绍文案和行动按钮文字</p>
+        {(["thinking", "reading", "journey"] as const).map((key) => {
+          const s = data.sections[key] ?? { subtitle: "", intro: "", action: "" };
+          const setS = (val: { subtitle?: string; intro?: string; action?: string }) => {
+            updateField("sections", { ...data.sections, [key]: { ...s, ...val } });
+          };
+          return (
+            <div key={key} style={{ padding: "12px 0", borderBottom: key !== "journey" ? "1px solid rgba(156,149,144,0.1)" : "none" }}>
+              <div style={{ fontSize: "0.875rem", color: "#A67C52", fontWeight: 500, marginBottom: "8px" }}>{SECTION_NAMES[key]}</div>
+              <div style={{ display: "flex", gap: "12px", marginBottom: "6px" }}>
+                <input type="text" value={s.subtitle} onChange={(e) => setS({ subtitle: e.target.value })}
+                  style={{ ...inputStyle, flex: 1 }} placeholder="副标题" />
+                <input type="text" value={s.action} onChange={(e) => setS({ action: e.target.value })}
+                  style={{ ...inputStyle, flex: 1 }} placeholder="按钮文字 (如: 进入探索)" />
+              </div>
+              <textarea value={s.intro} onChange={(e) => setS({ intro: e.target.value })}
+                rows={2} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.7 }} placeholder="卡片介绍文案" />
+            </div>
+          );
+        })}
       </div>
       <div className="flex justify-end">
         <Button onClick={onSave} disabled={saving === "home"} className="rounded-full px-8 py-2.5 text-base" style={{ backgroundColor: "#2D2A26", color: "#F5F1EB" }}>
