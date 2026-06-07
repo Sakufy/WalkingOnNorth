@@ -169,6 +169,8 @@
 /* ========================================
  * Homepage scroll-snap: only hero snap
  * Proximity = gentle, won't force-stop
+ * Mobile disabled — 100dvh changes when address bar shows/hides,
+ * causing snap points to shift mid-scroll → jank.
  * ======================================== */
 @layer utilities {
   .bx-scroll-snap {
@@ -176,6 +178,14 @@
   }
   .bx-snap-start {
     scroll-snap-align: start;
+  }
+  @media (max-width: 639px) {
+    .bx-scroll-snap {
+      scroll-snap-type: none;
+    }
+    .bx-snap-start {
+      scroll-snap-align: none;
+    }
   }
 }
 

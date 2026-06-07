@@ -220,12 +220,20 @@ export function Home({
   const sloganRef = useRef<HTMLDivElement>(null);
   const [showArrow, setShowArrow] = useState(true);
 
-  /* Enable scroll-snap on html — only while homepage is mounted */
+  /* Enable scroll-snap on html — desktop only.
+   * Mobile is disabled: 100dvh changes when address bar appears/hides,
+   * shifting snap points mid-scroll and causing jank. */
   useEffect(() => {
     const el = document.documentElement;
-    el.style.scrollSnapType = "y proximity";
+    const mq = window.matchMedia("(min-width: 640px)");
+    const apply = () => {
+      el.style.scrollSnapType = mq.matches ? "y proximity" : "";
+    };
+    apply();
+    mq.addEventListener("change", apply);
     return () => {
       el.style.scrollSnapType = "";
+      mq.removeEventListener("change", apply);
     };
   }, []);
 
