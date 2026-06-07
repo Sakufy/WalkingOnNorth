@@ -103,81 +103,67 @@ export function AboutPage({ pageData }: { pageData?: AboutPageData }) {
         )}
 
         {/* ==========================================
-         * SECTION 2 — 关键概念（定义卡片）
+         * Remaining sections — auto-detect concepts vs body
+         * Each section can be either body-paragraphs or
+         * concept-cards, determined by which field has data.
          * ========================================== */}
-        {sections[1] && (
-          <section style={{ marginBottom: "clamp(48px, 8vh, 80px)" }}>
-            <h2 style={{
-              fontFamily: '"Noto Serif SC","Source Serif 4",Georgia,serif', fontWeight: 600,
-              fontSize: "clamp(1.25rem, 3vw, 1.5rem)", lineHeight: 1.4,
-              color: "var(--bx-primary)", opacity: 0.85, marginBottom: "16px", letterSpacing: "0.01em",
-            }}>{sections[1].heading}</h2>
-            <div style={{ width: "32px", height: "2px", backgroundColor: "rgba(166,124,82,0.2)", marginBottom: "clamp(16px, 3vh, 28px)" }} />
-            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(14px, 2vh, 24px)" }}>
-              {(sections[1].concepts ?? []).map((c, i) => (
-                <div key={i} style={{
-                  display: "flex", gap: "clamp(8px, 1.5vw, 16px)", alignItems: "baseline",
-                  borderLeft: "3px solid rgba(166,124,82,0.18)", paddingLeft: "clamp(10px, 2vw, 16px)",
-                  paddingTop: "2px", paddingBottom: "2px",
-                }}>
-                  <span style={{
-                    fontFamily: '"Noto Serif SC","Source Serif 4",Georgia,serif', fontWeight: 600,
-                    fontSize: "clamp(0.9375rem, 2vw, 1.0625rem)", lineHeight: 1.5,
-                    color: "var(--bx-primary)", flex: "0 0 auto", minWidth: "clamp(64px, 18vw, 88px)",
-                  }}>{c.name}</span>
-                  <span style={{
-                    fontSize: "clamp(0.8125rem, 1.8vw, 0.875rem)", lineHeight: 1.7,
-                    color: "var(--bx-primary)", opacity: 0.6, flex: 1,
-                    fontFamily: '"Noto Sans SC",Inter,sans-serif',
-                  }}>{c.text}</span>
+        {sections.slice(1).map((sec, idx) => {
+          if (!sec) return null;
+          const isConcept = (sec.concepts?.length ?? 0) > 0;
+
+          return (
+            <section
+              key={idx}
+              style={{
+                marginBottom: idx === sections.length - 2
+                  ? "clamp(24px, 3vh, 40px)"
+                  : "clamp(48px, 8vh, 80px)",
+                paddingBottom: idx === sections.length - 2 ? "clamp(24px, 3vh, 40px)" : 0,
+              }}
+            >
+              <h2 style={{
+                fontFamily: '"Noto Serif SC","Source Serif 4",Georgia,serif', fontWeight: 600,
+                fontSize: "clamp(1.25rem, 3vw, 1.5rem)", lineHeight: 1.4,
+                color: "var(--bx-primary)", opacity: 0.85, marginBottom: "16px", letterSpacing: "0.01em",
+              }}>{sec.heading}</h2>
+              <div style={{ width: "32px", height: "2px", backgroundColor: "rgba(166,124,82,0.2)", marginBottom: "clamp(14px, 2.5vh, 24px)" }} />
+
+              {isConcept ? (
+                /* Concept cards layout */
+                <div style={{ display: "flex", flexDirection: "column", gap: "clamp(14px, 2vh, 24px)" }}>
+                  {(sec.concepts ?? []).map((c, ci) => (
+                    <div key={ci} style={{
+                      display: "flex", gap: "clamp(8px, 1.5vw, 16px)", alignItems: "baseline",
+                      borderLeft: "3px solid rgba(166,124,82,0.18)", paddingLeft: "clamp(10px, 2vw, 16px)",
+                      paddingTop: "2px", paddingBottom: "2px",
+                    }}>
+                      <span style={{
+                        fontFamily: '"Noto Serif SC","Source Serif 4",Georgia,serif', fontWeight: 600,
+                        fontSize: "clamp(0.9375rem, 2vw, 1.0625rem)", lineHeight: 1.5,
+                        color: "var(--bx-primary)", flex: "0 0 auto", minWidth: "clamp(64px, 18vw, 88px)",
+                      }}>{c.name}</span>
+                      <span style={{
+                        fontSize: "clamp(0.8125rem, 1.8vw, 0.875rem)", lineHeight: 1.7,
+                        color: "var(--bx-primary)", opacity: 0.6, flex: 1,
+                        fontFamily: '"Noto Sans SC",Inter,sans-serif',
+                      }}>{c.text}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ==========================================
-         * SECTION 3 — 目的与使命
-         * ========================================== */}
-        {sections[2] && (
-          <section style={{ marginBottom: "clamp(36px, 6vh, 64px)" }}>
-            <h2 style={{
-              fontFamily: '"Noto Serif SC","Source Serif 4",Georgia,serif', fontWeight: 600,
-              fontSize: "clamp(1.25rem, 3vw, 1.5rem)", lineHeight: 1.4,
-              color: "var(--bx-primary)", opacity: 0.85, marginBottom: "16px", letterSpacing: "0.01em",
-            }}>{sections[2].heading}</h2>
-            <div style={{ width: "32px", height: "2px", backgroundColor: "rgba(166,124,82,0.2)", marginBottom: "clamp(14px, 2.5vh, 24px)" }} />
-            {(sections[2].body ?? []).map((p, i) => (
-              <p key={i} style={{
-                fontFamily: '"LXGW WenKai","Noto Serif SC","Source Serif 4",Georgia,serif',
-                fontSize: "clamp(1rem, 2.5vw, 1.125rem)", lineHeight: 1.9,
-                color: "var(--bx-primary)", opacity: 0.78,
-                marginBottom: i < (sections[2].body?.length ?? 1) - 1 ? "clamp(16px, 2.5vh, 24px)" : 0,
-              }}>{p}</p>
-            ))}
-          </section>
-        )}
-
-        {/* ==========================================
-         * SECTION 4 — 联系方式
-         * ========================================== */}
-        {sections[3] && (
-          <section style={{ paddingBottom: "clamp(24px, 3vh, 40px)" }}>
-            <h2 style={{
-              fontFamily: '"Noto Serif SC","Source Serif 4",Georgia,serif', fontWeight: 600,
-              fontSize: "clamp(1.25rem, 3vw, 1.5rem)", lineHeight: 1.4,
-              color: "var(--bx-primary)", opacity: 0.85, marginBottom: "clamp(14px, 2.5vh, 24px)", letterSpacing: "0.01em",
-            }}>{sections[3].heading}</h2>
-            {(sections[3].body ?? []).map((p, i) => (
-              <p key={i} style={{
-                fontFamily: '"LXGW WenKai","Noto Sans SC",Inter,sans-serif',
-                fontSize: "clamp(0.9375rem, 2vw, 1rem)", lineHeight: 1.8,
-                color: "var(--bx-primary)", opacity: 0.78,
-                marginBottom: "8px",
-              }}>{p}</p>
-            ))}
-          </section>
-        )}
+              ) : (
+                /* Body paragraphs layout */
+                (sec.body ?? []).map((p, pi) => (
+                  <p key={pi} style={{
+                    fontFamily: '"LXGW WenKai","Noto Serif SC","Source Serif 4",Georgia,serif',
+                    fontSize: "clamp(1rem, 2.5vw, 1.125rem)", lineHeight: 1.9,
+                    color: "var(--bx-primary)", opacity: 0.78,
+                    marginBottom: pi < (sec.body?.length ?? 1) - 1 ? "clamp(16px, 2.5vh, 24px)" : 0,
+                  }}>{p}</p>
+                ))
+              )}
+            </section>
+          );
+        })}
 
         {!sections.length && (
           <p style={{ color: "var(--bx-secondary)", fontFamily: '"Noto Sans SC",Inter,sans-serif' }}>暂无内容。</p>
