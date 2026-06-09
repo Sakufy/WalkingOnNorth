@@ -70,7 +70,7 @@ const articleJsonLd = (post: {
   const sectionSlug = SECTION_SLUGS[post.section] ?? post.section;
   const siteUrl =
     process.env.NODE_ENV === "production"
-      ? "https://beixingzhilu.com"
+      ? "https://northwalking.cn"
       : "http://localhost:3000";
 
   const breadcrumbItems = [

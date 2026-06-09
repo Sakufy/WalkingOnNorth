@@ -748,14 +748,14 @@ export function ArticleDetail({ article }: {
             )}
           </div>
 
-          {/* Share button — Web Share API on mobile, copy-link fallback on desktop */}
+          {/* Share button — native sheet on supported browsers, copy-link fallback otherwise */}
           <div style={{ marginTop: "48px" }}>
             <div style={{ height: "1px", backgroundColor: "rgba(156,149,144,0.12)", marginBottom: "20px" }} />
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", position: "relative" }}>
               <button
                 type="button"
                 onClick={async () => {
-                  // Mobile: native share sheet (includes copy link natively)
+                  // Try native Web Share API (Chrome/Safari/Firefox mobile)
                   if (typeof navigator !== "undefined" && "share" in navigator) {
                     try {
                       await navigator.share({
@@ -764,12 +764,12 @@ export function ArticleDetail({ article }: {
                         url: window.location.href,
                       });
                       return;
-                    } catch { /* user cancelled or unsupported */ }
+                    } catch { /* user cancelled → show copy hint below */ }
                   }
-                  // Desktop fallback: copy link
+                  // Fallback: copy link with visible feedback
                   navigator.clipboard.writeText(window.location.href).catch(() => {});
                   const el = document.getElementById("share-copied-hint");
-                  if (el) { el.style.opacity = "1"; setTimeout(() => { el.style.opacity = "0"; }, 1500); }
+                  if (el) { el.style.opacity = "1"; setTimeout(() => { el.style.opacity = "0"; }, 2000); }
                 }}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: "6px",
@@ -791,7 +791,9 @@ export function ArticleDetail({ article }: {
                 </svg>
                 分享
               </button>
-              <span id="share-copied-hint" style={{ fontSize: "0.75rem", color: "#A67C52", opacity: 0, transition: "opacity 200ms ease", position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: "-20px", pointerEvents: "none" }} aria-hidden="true">已复制</span>
+              <span id="share-copied-hint" style={{ fontSize: "0.75rem", color: "#A67C52", opacity: 0, transition: "opacity 200ms ease", pointerEvents: "none" }} aria-hidden="true">
+                链接已复制，可粘贴分享
+              </span>
             </div>
           </div>
 
