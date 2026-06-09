@@ -45,8 +45,8 @@ export async function generateMetadata({
       images: [
         {
           url: `${process.env.NODE_ENV === "production" ? "https://northwalking.cn" : "http://localhost:3000"}/api/og?title=${encodeURIComponent(post.title)}&summary=${encodeURIComponent(post.summary ?? "")}&section=${encodeURIComponent(post.section)}&slug=${encodeURIComponent(slug)}`,
-          width: 1200,
-          height: 630,
+          width: 600,
+          height: 900,
           alt: post.title,
         },
       ],
