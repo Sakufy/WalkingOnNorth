@@ -757,21 +757,7 @@ export function ArticleDetail({ article }: {
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", position: "relative" }}>
               <button
                 type="button"
-                onClick={async () => {
-                  // Try native Web Share API (Chrome/Safari mobile)
-                  if (typeof navigator !== "undefined" && "share" in navigator) {
-                    try {
-                      await navigator.share({
-                        title: article.title,
-                        text: article.summary ?? undefined,
-                        url: window.location.href,
-                      });
-                      return;
-                    } catch { /* user cancelled or unsupported → open custom panel */ }
-                  }
-                  // Fallback: custom share bottom sheet
-                  setShowShare(true);
-                }}
+                onClick={() => setShowShare(true)}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: "6px",
                   fontSize: "0.8125rem", color: "var(--bx-secondary)",
@@ -925,7 +911,7 @@ export function ArticleDetail({ article }: {
         )
       )}
 
-      {/* Custom share bottom sheet — fallback for unsupported browsers */}
+      {/* Custom share bottom sheet — OG card preview + copy/save */}
       <ShareBottomSheet
         open={showShare}
         onClose={() => setShowShare(false)}
@@ -933,7 +919,6 @@ export function ArticleDetail({ article }: {
         summary={article.summary}
         section={article.section}
         url={typeof window !== "undefined" ? window.location.href : ""}
-        slug={article.slug}
       />
     </main>
   );
