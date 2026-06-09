@@ -1,5 +1,7 @@
 "use client";
 
+import { ShareBottomSheet } from "@/components/ShareBottomSheet";
+
 import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -321,6 +323,7 @@ export function ArticleDetail({ article }: {
   const [activeVersionId, setActiveVersionId] = useState<string>("");
   const [activeParagraphId, setActiveParagraphId] = useState<string | null>(null);
   const [showVersionsMobile, setShowVersionsMobile] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [comments, setComments] = useState<Array<{ id: string; postId: string; userId: string; paragraphId: string | null; type: string; content: string; charCount: number; isHighValue: boolean; createdAt: string; userName: string }>>([]);
   const [versions, setVersions] = useState<Array<{ id: string; versionNumber: number; changeSummary: string | null; createdAt: string; isCurrent: boolean }>>([]);
   const [versionContent, setVersionContent] = useState<string | null>(null);
@@ -755,7 +758,7 @@ export function ArticleDetail({ article }: {
               <button
                 type="button"
                 onClick={async () => {
-                  // Try native Web Share API (Chrome/Safari/Firefox mobile)
+                  // Try native Web Share API (Chrome/Safari mobile)
                   if (typeof navigator !== "undefined" && "share" in navigator) {
                     try {
                       await navigator.share({
@@ -764,12 +767,10 @@ export function ArticleDetail({ article }: {
                         url: window.location.href,
                       });
                       return;
-                    } catch { /* user cancelled → show copy hint below */ }
+                    } catch { /* user cancelled or unsupported → open custom panel */ }
                   }
-                  // Fallback: copy link with visible feedback
-                  navigator.clipboard.writeText(window.location.href).catch(() => {});
-                  const el = document.getElementById("share-copied-hint");
-                  if (el) { el.style.opacity = "1"; setTimeout(() => { el.style.opacity = "0"; }, 2000); }
+                  // Fallback: custom share bottom sheet
+                  setShowShare(true);
                 }}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: "6px",
@@ -791,9 +792,6 @@ export function ArticleDetail({ article }: {
                 </svg>
                 分享
               </button>
-              <span id="share-copied-hint" style={{ fontSize: "0.75rem", color: "#A67C52", opacity: 0, transition: "opacity 200ms ease", pointerEvents: "none" }} aria-hidden="true">
-                链接已复制，可粘贴分享
-              </span>
             </div>
           </div>
 
@@ -926,6 +924,17 @@ export function ArticleDetail({ article }: {
           </div>
         )
       )}
+
+      {/* Custom share bottom sheet — fallback for unsupported browsers */}
+      <ShareBottomSheet
+        open={showShare}
+        onClose={() => setShowShare(false)}
+        title={article.title}
+        summary={article.summary}
+        section={article.section}
+        url={typeof window !== "undefined" ? window.location.href : ""}
+        slug={article.slug}
+      />
     </main>
   );
 }
