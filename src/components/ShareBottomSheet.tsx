@@ -22,25 +22,40 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url, 
   const [copied, setCopied] = useState<"image" | "link" | null>(null);
   const [ogLoaded, setOgLoaded] = useState(false);
 
-  // Animate in/out
+  // Phase 1: show DOM when open
   useEffect(() => {
     if (open) {
       setVisible(true);
       setCopied(null);
       setOgLoaded(false);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          document.getElementById("share-backdrop")?.classList.add("s-active");
-          document.getElementById("share-panel")?.classList.add("s-active");
-        });
-      });
-    } else {
-      document.getElementById("share-backdrop")?.classList.remove("s-active");
-      document.getElementById("share-panel")?.classList.remove("s-active");
-      const t = setTimeout(() => setVisible(false), 260);
-      return () => clearTimeout(t);
     }
   }, [open]);
+
+  // Phase 2: animate in AFTER DOM exists (depends on visible, not open)
+  useEffect(() => {
+    if (!visible) return;
+    const raf = requestAnimationFrame(() => {
+      document.getElementById("share-backdrop")?.classList.add("s-active");
+      document.getElementById("share-panel")?.classList.add("s-active");
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [visible]);
+
+  // Phase 3: animate out when closed
+  useEffect(() => {
+    if (open || !visible) return;
+    // already animating out (triggered by onClose)
+  }, [open, visible]);
+
+  // onClose: animate out → unmount after transition
+  const handleClose = useCallback(() => {
+    document.getElementById("share-backdrop")?.classList.remove("s-active");
+    document.getElementById("share-panel")?.classList.remove("s-active");
+    setTimeout(() => {
+      setVisible(false);
+      onClose();
+    }, 260);
+  }, [onClose]);
 
   // Lock body scroll
   useEffect(() => {
@@ -93,7 +108,7 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url, 
       <div
         id="share-backdrop"
         className="s-backdrop"
-        onClick={onClose}
+        onClick={handleClose}
         role="button"
         tabIndex={-1}
         aria-label="关闭"
@@ -204,7 +219,7 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url, 
             {/* Cancel */}
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               style={{
                 width: "100%", padding: "12px", borderRadius: "8px",
                 border: "none", backgroundColor: "transparent",
