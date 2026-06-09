@@ -6,8 +6,8 @@ import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { ArticleDetail } from "@/components/pages/ArticleDetailPage";
 
-// ISR: cache article pages 4 hours (articles rarely change after publish)
-export const revalidate = 14400;
+// ISR: cache 10min. OG image requires fresh cache for WeChat card preview.
+export const revalidate = 600;
 
 const SECTION_NAMES: Record<string, string> = {
   explore: "自我探索",
