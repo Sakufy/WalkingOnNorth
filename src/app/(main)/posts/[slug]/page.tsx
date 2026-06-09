@@ -44,7 +44,7 @@ export async function generateMetadata({
       tags: post.tags ? post.tags.split(",").map((t) => t.trim()) : undefined,
       images: [
         {
-          url: `${process.env.NODE_ENV === "production" ? "https://northwalking.cn" : "http://localhost:3000"}/api/og?title=${encodeURIComponent(post.title)}&summary=${encodeURIComponent(post.summary ?? "")}&section=${encodeURIComponent(post.section)}`,
+          url: `${process.env.NODE_ENV === "production" ? "https://northwalking.cn" : "http://localhost:3000"}/api/og?title=${encodeURIComponent(post.title)}&summary=${encodeURIComponent(post.summary ?? "")}&section=${encodeURIComponent(post.section)}&slug=${encodeURIComponent(slug)}`,
           width: 1200,
           height: 630,
           alt: post.title,

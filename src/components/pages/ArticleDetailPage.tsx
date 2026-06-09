@@ -919,6 +919,7 @@ export function ArticleDetail({ article }: {
         summary={article.summary}
         section={article.section}
         url={typeof window !== "undefined" ? window.location.href : ""}
+        slug={article.slug}
       />
     </main>
   );

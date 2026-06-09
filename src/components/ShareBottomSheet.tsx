@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type Props = {
   open: boolean;
@@ -9,43 +9,34 @@ type Props = {
   summary: string;
   section: string;
   url: string;
+  slug: string;
 };
 
 /**
- * Custom share panel — shows OG preview card + share options.
- *
- * Strategy:
- * 1. Try Web Share API with URL (browsers that support it)
- *    → platform fetches our og:image meta tag → renders rich card
- * 2. Fallback: custom bottom sheet with:
- *    - OG card preview (fetched from /api/og)
- *    - Copy link (paste into WeChat/etc. → platform fetches og:image → card)
- *    - Save image (manual share)
- *    - WeChat guidance when applicable
+ * Share bottom sheet — shows OG preview card (小红书 style) with two actions:
+ * 1. Copy image — copies the OG card image to clipboard (paste into WeChat/anywhere)
+ * 2. Copy link — copies the article URL
  */
-export function ShareBottomSheet({ open, onClose, title, summary, section, url }: Props) {
+export function ShareBottomSheet({ open, onClose, title, summary, section, url, slug }: Props) {
   const [visible, setVisible] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"image" | "link" | null>(null);
   const [ogLoaded, setOgLoaded] = useState(false);
-  const [shareFailed, setShareFailed] = useState(false);
-  const ogImgRef = useRef<HTMLElement | null>(null);
 
   // Animate in/out
   useEffect(() => {
     if (open) {
       setVisible(true);
-      setShareFailed(false);
-      setCopied(false);
+      setCopied(null);
       setOgLoaded(false);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          document.getElementById("share-backdrop")?.classList.add("share--active");
-          document.getElementById("share-panel")?.classList.add("share--active");
+          document.getElementById("share-backdrop")?.classList.add("s-active");
+          document.getElementById("share-panel")?.classList.add("s-active");
         });
       });
     } else {
-      document.getElementById("share-backdrop")?.classList.remove("share--active");
-      document.getElementById("share-panel")?.classList.remove("share--active");
+      document.getElementById("share-backdrop")?.classList.remove("s-active");
+      document.getElementById("share-panel")?.classList.remove("s-active");
       const t = setTimeout(() => setVisible(false), 260);
       return () => clearTimeout(t);
     }
@@ -57,32 +48,20 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url }
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // Try native share (URL-based → platform renders OG card)
-  const handleNativeShare = useCallback(async () => {
-    if (typeof navigator === "undefined" || !("share" in navigator)) {
-      setShareFailed(true);
-      return;
-    }
+  const ogUrl = `/api/og?title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}&section=${encodeURIComponent(section)}&slug=${encodeURIComponent(slug)}`;
+
+  // Copy image to clipboard
+  const handleCopyImage = useCallback(async () => {
     try {
-      await navigator.share({ title, text: summary || undefined, url });
-      onClose();
+      const res = await fetch(ogUrl);
+      const blob = await res.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob }),
+      ]);
+      setCopied("image");
+      setTimeout(() => setCopied(null), 2000);
     } catch {
-      setShareFailed(true); // user cancelled or unsupported
-    }
-  }, [title, summary, url, onClose]);
-
-  // Copy URL (paste into WeChat → platform fetches og:image → renders card)
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {});
-  }, [url]);
-
-  // Save OG image to device
-  const handleSaveImage = useCallback(async () => {
-    const ogUrl = `/api/og?title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}&section=${encodeURIComponent(section)}`;
-    try {
+      // Fallback: download image
       const res = await fetch(ogUrl);
       const blob = await res.blob();
       const blobUrl = URL.createObjectURL(blob);
@@ -93,44 +72,41 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url }
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(blobUrl);
-    } catch { /* download failed */ }
-  }, [title, summary, section]);
-
-  // Auto-try native share on open (for supported browsers)
-  useEffect(() => {
-    if (open) {
-      const t = setTimeout(() => handleNativeShare(), 100);
-      return () => clearTimeout(t);
+      setCopied("image");
+      setTimeout(() => setCopied(null), 2000);
     }
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ogUrl, title]);
+
+  // Copy link
+  const handleCopyLink = useCallback(() => {
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied("link");
+      setTimeout(() => setCopied(null), 2000);
+    }).catch(() => {});
+  }, [url]);
 
   if (!visible) return null;
-
-  const ogUrl = `/api/og?title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}&section=${encodeURIComponent(section)}`;
-  const isWeChat = typeof navigator !== "undefined" && /micromessenger/i.test(navigator.userAgent);
 
   return (
     <>
       {/* Backdrop */}
       <div
         id="share-backdrop"
-        className="share-backdrop"
+        className="s-backdrop"
         onClick={onClose}
         role="button"
         tabIndex={-1}
-        aria-label="关闭分享面板"
+        aria-label="关闭"
       />
 
       {/* Panel */}
-      <div id="share-panel" className="share-panel">
-        {/* Drag handle */}
+      <div id="share-panel" className="s-panel">
         <div style={{
           width: "36px", height: "4px", borderRadius: "2px",
           backgroundColor: "rgba(156,149,144,0.3)", margin: "8px auto 0",
         }} />
 
         <div style={{ padding: "16px 20px 32px" }}>
-          {/* Header */}
           <p style={{
             textAlign: "center", fontSize: "0.9375rem", fontWeight: 500,
             color: "var(--bx-primary)", marginBottom: "16px",
@@ -142,13 +118,12 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url }
           {/* OG Preview Card */}
           <div style={{
             borderRadius: "10px", overflow: "hidden",
-            border: "1px solid rgba(156,149,144,0.15)",
-            backgroundColor: "#2D2A26", marginBottom: "20px",
+            marginBottom: "20px",
+            backgroundColor: "#2D2A26",
             position: "relative",
           }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              ref={(el) => { ogImgRef.current = el; }}
               src={ogUrl}
               alt={title}
               style={{
@@ -165,77 +140,43 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url }
                 <p style={{ color: "#9C9590", fontSize: "0.8125rem" }}>加载中…</p>
               </div>
             )}
-            {/* Card footer overlay */}
-            <div style={{
-              padding: "10px 14px", display: "flex", alignItems: "center",
-              justifyContent: "space-between", backgroundColor: "#2D2A26",
-              borderTop: "1px solid rgba(156,149,144,0.1)",
-            }}>
-              <span style={{ fontSize: "0.75rem", color: "#9C9590", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
-                {title}
-              </span>
-              <span style={{ fontSize: "0.6875rem", color: "#9C9590", opacity: 0.6, whiteSpace: "nowrap", marginLeft: "8px" }}>
-                northwalking.cn
-              </span>
-            </div>
           </div>
-
-          {/* WeChat guidance */}
-          {isWeChat && (
-            <div style={{
-              backgroundColor: "rgba(7,193,96,0.08)", borderRadius: "8px",
-              padding: "10px 14px", marginBottom: "16px",
-              fontSize: "0.8125rem", color: "var(--bx-primary)", lineHeight: 1.6,
-              textAlign: "center",
-            }}>
-              点击右上角 <span style={{ fontWeight: 600 }}>···</span> 选择「发送给朋友」或「分享到朋友圈」
-            </div>
-          )}
-
-          {/* Share hint */}
-          {shareFailed && !isWeChat && (
-            <p style={{
-              textAlign: "center", fontSize: "0.75rem", color: "var(--bx-secondary)",
-              marginBottom: "12px", lineHeight: 1.5,
-            }}>
-              复制链接，贴到微信即可显示上方卡片
-            </p>
-          )}
 
           {/* Buttons */}
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {/* Copy link — primary action */}
+            {/* Copy image */}
             <button
               type="button"
-              onClick={handleCopy}
+              onClick={handleCopyImage}
               style={{
                 width: "100%", padding: "12px", borderRadius: "8px",
                 border: "none", backgroundColor: "#2D2A26",
-                color: copied ? "#6B8F5E" : "var(--bx-neutral)",
-                fontSize: "0.9375rem", cursor: "pointer",
+                color: copied === "image" ? "#6B8F5E" : "var(--bx-neutral)",
+                fontSize: "0.9375rem", cursor: "pointer", fontWeight: 500,
                 fontFamily: '"Noto Sans SC", Inter, sans-serif',
                 transition: "color 150ms ease",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                gap: "8px", fontWeight: 500,
+                gap: "8px",
               }}
             >
-              {copied ? (
-                <>✓ 已复制，可粘贴分享</>
+              {copied === "image" ? (
+                "✓ 图片已复制"
               ) : (
                 <>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" />
-                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
                   </svg>
-                  复制链接
+                  复制图片
                 </>
               )}
             </button>
 
-            {/* Save image */}
+            {/* Copy link */}
             <button
               type="button"
-              onClick={handleSaveImage}
+              onClick={handleCopyLink}
               style={{
                 width: "100%", padding: "12px", borderRadius: "8px",
                 border: "1px solid rgba(156,149,144,0.25)",
@@ -247,12 +188,17 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url }
                 gap: "8px",
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              保存图片
+              {copied === "link" ? (
+                "✓ 链接已复制"
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                  </svg>
+                  复制链接
+                </>
+              )}
             </button>
 
             {/* Cancel */}
@@ -273,17 +219,17 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url }
       </div>
 
       <style>{`
-        .share-backdrop {
+        .s-backdrop {
           position: fixed; inset: 0; z-index: 100;
           background: rgba(45,42,38,0);
           transition: background 260ms ease;
           pointer-events: none;
         }
-        .share-backdrop.share--active {
+        .s-backdrop.s-active {
           background: rgba(45,42,38,0.35);
           pointer-events: auto;
         }
-        .share-panel {
+        .s-panel {
           position: fixed; bottom: 0; left: 0; right: 0; z-index: 101;
           background: var(--bx-neutral);
           border-radius: 16px 16px 0 0;
@@ -294,7 +240,7 @@ export function ShareBottomSheet({ open, onClose, title, summary, section, url }
           -webkit-overflow-scrolling: touch;
           box-shadow: 0 -2px 20px rgba(45,42,38,0.08);
         }
-        .share-panel.share--active {
+        .s-panel.s-active {
           transform: translateY(0);
         }
       `}</style>
