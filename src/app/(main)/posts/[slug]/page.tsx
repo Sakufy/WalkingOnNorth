@@ -42,6 +42,14 @@ export async function generateMetadata({
       publishedTime: post.createdAt,
       modifiedTime: post.updatedAt,
       tags: post.tags ? post.tags.split(",").map((t) => t.trim()) : undefined,
+      images: [
+        {
+          url: `${process.env.NODE_ENV === "production" ? "https://northwalking.cn" : "http://localhost:3000"}/api/og?title=${encodeURIComponent(post.title)}&summary=${encodeURIComponent(post.summary ?? "")}&section=${encodeURIComponent(post.section)}`,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
     },
     alternates: {
       canonical: `/posts/${slug}`,

@@ -748,8 +748,71 @@ export function ArticleDetail({ article }: {
             )}
           </div>
 
+          {/* Share section — quiet, functional. Web Share API on mobile, copy-link on desktop. */}
+          <div style={{ marginTop: "48px" }}>
+            <div style={{ height: "1px", backgroundColor: "rgba(156,149,144,0.12)", marginBottom: "20px" }} />
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", position: "relative" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href).catch(() => {});
+                  const el = document.getElementById("share-copied-hint");
+                  if (el) { el.style.opacity = "1"; setTimeout(() => { el.style.opacity = "0"; }, 1500); }
+                }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: "6px",
+                  fontSize: "0.8125rem", color: "var(--bx-secondary)",
+                  background: "none", border: "none", cursor: "pointer",
+                  padding: "8px 16px", borderRadius: "9999px",
+                  fontFamily: '"Noto Sans SC", Inter, sans-serif',
+                  transition: "color 150ms ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--bx-primary)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--bx-secondary)")}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+                复制链接
+              </button>
+              <span id="share-copied-hint" style={{ fontSize: "0.75rem", color: "#A67C52", opacity: 0, transition: "opacity 200ms ease", position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: "-20px", pointerEvents: "none" }} aria-hidden="true">已复制</span>
+              {typeof navigator !== "undefined" && "share" in navigator && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.share({
+                      title: article.title,
+                      text: article.summary ?? undefined,
+                      url: window.location.href,
+                    }).catch(() => {});
+                  }}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: "6px",
+                    fontSize: "0.8125rem", color: "var(--bx-secondary)",
+                    background: "none", border: "none", cursor: "pointer",
+                    padding: "8px 16px", borderRadius: "9999px",
+                    fontFamily: '"Noto Sans SC", Inter, sans-serif',
+                    transition: "color 150ms ease",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--bx-primary)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--bx-secondary)")}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                  </svg>
+                  分享
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Comments section — muted divider, not competing with content */}
-          <div style={{ marginTop: "40px" }}>
+          <div style={{ marginTop: "24px" }}>
             <div style={{ height: "1px", backgroundColor: "rgba(156,149,144,0.12)", marginBottom: "24px" }} />
             <h2 style={{ fontFamily: '"Noto Serif SC", "Source Serif 4", Georgia, serif', fontWeight: 600, fontSize: "1.125rem", color: "var(--bx-primary)", marginBottom: "20px", opacity: 0.85 }}>评论</h2>
 
